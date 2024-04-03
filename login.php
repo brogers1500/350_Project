@@ -7,12 +7,12 @@
     </head>
     <body>
 	<h1 class="center">Video Games</h1>
-	<nav>
-	    <a href="home.php">Home</a>
-	    <a href="search.php">Search</a>
-	    <a href="edit.php">Edit</a>
-	    <a href="login.php">Login</a>
-	</nav>
+    <div class="button-container">
+        <a href="home.php"><button>Home</button></a>
+        <a href="search.php"><button>Search</button></a>
+        <a href="edit.php"><button>Edit</button></a>
+        <button class="button disabled">Login</button>
+        </div>
 	<h2>Login</h2>
 	<form>
 	    <table>

@@ -2,10 +2,61 @@
     text-align: center;
 }
 
+body {
+    background-color: #232323;
+}
+h1 {
+    font: 3rem "Georgia", serif;
+    color: #FFFFFF;
+}
+h2 {
+    font: 1.5rem "Georgia", serif;
+    color: #FFFFFF;
+}
 nav { 
     text-align: center;
 }
-
+button{
+      display: block;
+  margin: auto;
+     text-align: center;
+     width: 250px;
+     color: white;
+     font-size: 20px;
+     background-color: black;
+     padding: 30px;
+    }
+button:hover{
+        background-color: green;
+    }
+.disabled {
+    /*Use this for the button we are currently on. Does not allow it to be clicked, grays it out. */
+  opacity: 0.6;
+  background-color:green;
+  cursor: not-allowed;
+}
+a:link{
+    display: block;
+    margin:auto;
+    color:white;
+    text-decoration: none;
+}
+a:visited{
+      display: block;
+  margin: auto;
+    color:white;
+    text-decoration: none;
+}
+a:hover{
+      display: block;
+  margin: auto;
+    color:green;
+    text-decoration: none;
+}
+.button-container {
+    display: flex;
+    text-align: center;
+}
 nav a {
     padding: 100px;
     text-decoration: none;
