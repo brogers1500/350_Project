@@ -6,6 +6,16 @@
 	<link rel="stylesheet" href="style.css">
     </head>
     <body>
+    <?php
+        include "credentials.php";
+        $servername = "localhost";
+        $db = "Arapaima";
+        $connection = mysqli_connect($servername, $username, $password, $db);
+
+        if (mysqli_connect_errno()){
+            echo "<p>Failed to connect to the server!</p>";
+        }
+    ?>
 	<h1 class="center">Video Games</h1>
     <div class="button-container">
          <a href="home.php"><button>Home</button></a>
