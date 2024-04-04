@@ -14,6 +14,7 @@
         <a href="login.php"><button>Login</button></a>
     </div>
 
+    <!-- Connect to Server -->
     <?php
         include "credentials.php";
         $servername = "localhost";
@@ -27,16 +28,20 @@
         }
     ?>
 
+    <!-- Multiple forms used to insert or edit each table within database -->
+    <!-- Need to figure out how to know which form is being submitted to determine which SQL query to execute.
+    name for submit inputs could be used. If submit with name 'game_insert' is pressed, execute query to
+    INSERT into Game table. Will need to include Edit and maybe Delete submits later on -->
 	<h2>Edit</h2>
+    
+    <!-- Game Form -->
 	<form action="edit.php" method="post">
+        <fieldset>
+        <legend>Game</legend>
 	    <table>
 		<tr>
 	        <td><label>Title</label></td>
 		    <td><input type="text" name="title"><br></td>
-		</tr>
-	    <tr>
-		    <td><label>Release Date</label></td>
-	        <td><input type="text" name="release"><br></td>
 		</tr>
 		<tr>
 		    <td><label>Developer</label></td>
@@ -58,21 +63,92 @@
 	        <td><label>Genres</label></td>
 	        <td><input type="text" name="genre"><br></td>
 		</tr>
-        </table>
-	    <fieldset>
-		<legend>Modes</legend>
-		    <table>
-			<tr>
-	            <td><label>Singleplayer</label></td>
-			    <td><input type="checkbox" name="singleplayer"><br></td>
-			    <td><label>Multiplayer</label></td>
-		        <td><input type="checkbox" name="multiplayer"><br></td>
-			</tr>
-		    </table>
-	    </fieldset>
-
-	    <input type="submit" value="Insert">
+	    <tr>
+		    <td><label>Release Date</label></td>
+	        <td><input type="date" name="release"><br></td>
+		</tr>
+		<tr>
+	        <td><label>Singleplayer</label></td>
+			<td><input type="checkbox" name="singleplayer"><br></td>
+        </tr>
+        <tr>
+			<td><label>Multiplayer</label></td>
+		    <td><input type="checkbox" name="multiplayer"><br></td>
+	    </tr>
+        <tr>
+            <td><input type="submit" name="game_insert" value="Insert"></td>
+        </tr>
+		</table>
+        </fieldset>
 	</form>
+
+    <!-- Platform Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Platform</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name"><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="platform_insert" value="Insert"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <!-- Developer Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Developer</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name"><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="developer_insert" value="Insert"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <!-- Publisher Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Publisher</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name"><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="publisher_insert" value="Insert"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <!-- Review Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Review</legend>
+        <table>
+        <tr>
+            <td><label>Reviewer</label></td>
+            <td><input type="text" name="name"><br></td>
+        </tr>
+        <tr>
+            <td><label>Review</label></td>
+            <td><input type="text" name="name"><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="review_insert" value="Insert"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
     </body>
 
 </html>
