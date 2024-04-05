@@ -26,6 +26,38 @@
         } else {
             echo "<p>Connected to the server</p>";
         }
+
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // Check which submit button was pressed and insert data
+            if (isset($_POST['game_insert'])) {
+                echo "game_insert set";
+            } else if (isset($_POST['platform_insert'])) {
+                echo "<p>platform_insert set</p>";
+                $name;
+                if (isset($_POST['name'])) {
+                    $name = $_POST['name'];
+                    echo "$name";
+                    $result = mysqli_query($connection, "SELECT name FROM Platform WHERE name = '$name'");
+                    $row = mysqli_fetch_assoc($result);
+                    $name2;
+                    if (is_null($row)) {
+                        if (mysqli_query($connection, "INSERT INTO Platform (name) VALUES ('$name')")) {
+                            echo "<p> Inserted platform in database";
+                        } else {
+                            echo "<p> Error: platform could not be inserted</p>";
+                        }
+                    } else {
+                        echo "<p>Platform already in database</p>";
+                    }
+                }
+            } else if (isset($_POST['developer_insert'])) {
+                echo "developer_insert set";
+            } else if (isset($_POST['publisher_insert'])) {
+                echo "publisher_insert set";
+            } else if (isset($_POST['review_insert'])) {
+                echo "review_insert set";
+            }
+        }
     ?>
 
     <!-- Multiple forms used to insert or edit each table within database -->
