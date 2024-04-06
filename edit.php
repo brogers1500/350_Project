@@ -51,9 +51,43 @@
                     }
                 }
             } else if (isset($_POST['developer_insert'])) {
-                echo "developer_insert set";
+                echo "<p>developer_insert set</p>";
+                $name;
+                if (isset($_POST['name'])) {
+                    $name = $_POST['name'];
+                    echo "$name";
+                    $result = mysqli_query($connection, "SELECT name FROM Developer WHERE name = '$name'");
+                    $row = mysqli_fetch_assoc($result);
+                    $name2;
+                    if (is_null($row)) {
+                        if (mysqli_query($connection, "INSERT INTO Developer (name) VALUES ('$name')")) {
+                            echo "<p> Inserted developer in database";
+                        } else {
+                            echo "<p> Error: developer could not be inserted</p>";
+                        }
+                    } else {
+                        echo "<p>Developer already in database</p>";
+                    }
+                }
             } else if (isset($_POST['publisher_insert'])) {
-                echo "publisher_insert set";
+                echo "<p>publisher_insert set</p>";
+                $name;
+                if (isset($_POST['name'])) {
+                    $name = $_POST['name'];
+                    echo "$name";
+                    $result = mysqli_query($connection, "SELECT name FROM Publisher WHERE name = '$name'");
+                    $row = mysqli_fetch_assoc($result);
+                    $name2;
+                    if (is_null($row)) {
+                        if (mysqli_query($connection, "INSERT INTO Publisher (name) VALUES ('$name')")) {
+                            echo "<p> Inserted publisher in database";
+                        } else {
+                            echo "<p> Error: publisher could not be inserted</p>";
+                        }
+                    } else {
+                        echo "<p>Publisher already in database</p>";
+                    }
+                }
             } else if (isset($_POST['review_insert'])) {
                 echo "review_insert set";
             }
