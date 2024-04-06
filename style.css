@@ -61,3 +61,11 @@ nav a {
     padding: 100px;
     text-decoration: none;
 }
+table, th, td{}
+ th, td {
+   padding: 15px;
+   color: white;
+   text-align: left;
+ }
+ tr:hover {background-color: green;}
+
