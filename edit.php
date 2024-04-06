@@ -13,16 +13,128 @@
         <button class="button disabled">Edit</button>
         <a href="login.php"><button>Login</button></a>
     </div>
+
+    <!-- Connect to Server -->
+    <?php
+        include "credentials.php";
+        $servername = "localhost";
+        $db = "Arapaima";
+        $connection = mysqli_connect($servername, $username, $password, $db);
+
+        if (mysqli_connect_errno()) {
+            echo "<p>Failed to connect to the server</p>";
+        } else {
+            echo "<p>Connected to the server</p>";
+        }
+
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            // Check which submit button was pressed and insert data
+            if (isset($_POST['game_insert'])) {
+                echo "game_insert set";
+            } else if (isset($_POST['platform_insert'])) {
+                echo "<p>platform_insert set</p>";
+                $name;
+                if (isset($_POST['name'])) {
+                    $name = $_POST['name'];
+                    echo "$name";
+                    $result = mysqli_query($connection, "SELECT name FROM Platform WHERE name = '$name'");
+                    $row = mysqli_fetch_assoc($result);
+                    if (is_null($row)) {
+                        if (mysqli_query($connection, "INSERT INTO Platform (name) VALUES ('$name')")) {
+                            echo "<p> Inserted platform in database";
+                        } else {
+                            echo "<p> Error: platform could not be inserted</p>";
+                        }
+                    } else {
+                        echo "<p>Platform already in database</p>";
+                    }
+                }
+            } else if (isset($_POST['developer_insert'])) {
+                echo "<p>developer_insert set</p>";
+                $name;
+                if (isset($_POST['name'])) {
+                    $name = $_POST['name'];
+                    echo "$name";
+                    $result = mysqli_query($connection, "SELECT name FROM Developer WHERE name = '$name'");
+                    $row = mysqli_fetch_assoc($result);
+                    if (is_null($row)) {
+                        if (mysqli_query($connection, "INSERT INTO Developer (name) VALUES ('$name')")) {
+                            echo "<p> Inserted developer in database";
+                        } else {
+                            echo "<p> Error: developer could not be inserted</p>";
+                        }
+                    } else {
+                        echo "<p>Developer already in database</p>";
+                    }
+                }
+            } else if (isset($_POST['publisher_insert'])) {
+                echo "<p>publisher_insert set</p>";
+                $name;
+                if (isset($_POST['name'])) {
+                    $name = $_POST['name'];
+                    echo "$name";
+                    $result = mysqli_query($connection, "SELECT name FROM Publisher WHERE name = '$name'");
+                    $row = mysqli_fetch_assoc($result);
+                    if (is_null($row)) {
+                        if (mysqli_query($connection, "INSERT INTO Publisher (name) VALUES ('$name')")) {
+                            echo "<p> Inserted publisher in database";
+                        } else {
+                            echo "<p> Error: publisher could not be inserted</p>";
+                        }
+                    } else {
+                        echo "<p>Publisher already in database</p>";
+                    }
+                }
+            } else if (isset($_POST['review_insert'])) {
+                echo "<p>publisher_insert set</p>";
+                $review;
+                $reviewer;
+                $game;
+                if (isset($_POST['game']) && isset($_POST['review']) && isset($_POST['reviewer'])) {
+                    $review = $_POST['review'];
+                    $reviewer = $_POST['reviewer'];
+                    $game = $_POST['game'];
+                    echo "Game = " . $game . " - Review = " . $review . " - Reviewer = " . $reviewer;
+                    // Check if game is in database
+                    $result = mysqli_query($connection, "SELECT id FROM Game WHERE title = '$game'");
+                    $row = mysqli_fetch_assoc($result);
+                    if (is_null($row)) {
+                        echo "<p>Game is not in database</p>";
+                    } else {
+                        $game = $row['id'];
+                        echo "<p>Game id = '$game'</p>";
+                        $result = mysqli_query($connection, "SELECT review, reviewer FROM Review WHERE game = '$game' AND reviewer = '$reviewer'");
+                        $row = mysqli_fetch_assoc($result);
+                        // Check if review is already in database
+                        if (is_null($row)) {
+                            if (mysqli_query($connection, "INSERT INTO Review (reviewer, review, game) VALUES ('$reviewer', '$review', '$game')")) {
+                                echo "<p> Inserted review in database";
+                            } else {
+                                echo "<p> Error: review could not be inserted</p>";
+                            }
+                        } else {
+                            echo "<p>Review from reviewer for game already in database</p>";
+                        }
+                    }
+                }
+            }
+        }
+    ?>
+
+    <!-- Multiple forms used to insert or edit each table within database -->
+    <!-- Need to figure out how to know which form is being submitted to determine which SQL query to execute.
+    name for submit inputs could be used. If submit with name 'game_insert' is pressed, execute query to
+    INSERT into Game table. Will need to include Edit and maybe Delete submits later on -->
 	<h2>Edit</h2>
-	<form>
+    
+    <!-- Game Form -->
+	<form action="edit.php" method="post">
+        <fieldset>
+        <legend>Game</legend>
 	    <table>
 		<tr>
-	    	    <td><label>Title</label></td>
+	        <td><label>Title</label></td>
 		    <td><input type="text" name="title"><br></td>
-		</tr>
-	        <tr>
-		    <td><label>Release Date</label></td>
-	            <td><input type="text" name="release"><br></td>
 		</tr>
 		<tr>
 		    <td><label>Developer</label></td>
@@ -33,32 +145,107 @@
 		    <td><input type="text" name="publisher"><br></td>
 		</tr>
 		<tr>
-	            <td><label>Rating</label></td>
-	            <td><input type="text" name="rating"><br></td>
+	        <td><label>Rating</label></td>
+	        <td><input type="text" name="rating"><br></td>
 		</tr>
 		<tr>
-	            <td><label>Platforms</label></td>
-	            <td><input type="text" name="platform"><br></td>
+	        <td><label>Platforms</label></td>
+	        <td><input type="text" name="platform"><br></td>
 		</tr>
 		<tr>
-	            <td><label>Genres</label></td>
-	            <td><input type="text" name="genre"><br></td>
+	        <td><label>Genres</label></td>
+	        <td><input type="text" name="genre"><br></td>
 		</tr>
-            </table>
-	    <fieldset>
-		<legend>Modes</legend>
-		    <table>
-			<tr>
-	                    <td><label>Singleplayer</label></td>
-			    <td><input type="checkbox" name="singleplayer"><br></td>
-			    <td><label>Multiplayer</label></td>
-		            <td><input type="checkbox" name="multiplayer"><br></td>
-			</tr>
-		    </table>
-	    </fieldset>
-
-	    <input type="submit" value="Insert">
+	    <tr>
+		    <td><label>Release Date</label></td>
+	        <td><input type="date" name="release"><br></td>
+		</tr>
+		<tr>
+	        <td><label>Singleplayer</label></td>
+			<td><input type="checkbox" name="singleplayer"><br></td>
+        </tr>
+        <tr>
+			<td><label>Multiplayer</label></td>
+		    <td><input type="checkbox" name="multiplayer"><br></td>
+	    </tr>
+        <tr>
+            <td><input type="submit" name="game_insert" value="Insert"></td>
+        </tr>
+		</table>
+        </fieldset>
 	</form>
+
+    <!-- Platform Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Platform</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name"><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="platform_insert" value="Insert"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <!-- Developer Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Developer</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name"><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="developer_insert" value="Insert"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <!-- Publisher Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Publisher</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name"><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="publisher_insert" value="Insert"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <!-- Review Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Review</legend>
+        <table>
+        <tr>
+            <td><label>Game</label></td>
+            <td><input type="text" name="game"><br></td>
+        </tr>
+        <tr>
+            <td><label>Reviewer</label></td>
+            <td><input type="text" name="reviewer"><br></td>
+        </tr>
+        <tr>
+            <td><label>Review</label></td>
+            <td><input type="text" name="review"><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="review_insert" value="Insert"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
     </body>
 
 </html>
