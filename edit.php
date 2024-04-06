@@ -39,7 +39,6 @@
                     echo "$name";
                     $result = mysqli_query($connection, "SELECT name FROM Platform WHERE name = '$name'");
                     $row = mysqli_fetch_assoc($result);
-                    $name2;
                     if (is_null($row)) {
                         if (mysqli_query($connection, "INSERT INTO Platform (name) VALUES ('$name')")) {
                             echo "<p> Inserted platform in database";
@@ -58,7 +57,6 @@
                     echo "$name";
                     $result = mysqli_query($connection, "SELECT name FROM Developer WHERE name = '$name'");
                     $row = mysqli_fetch_assoc($result);
-                    $name2;
                     if (is_null($row)) {
                         if (mysqli_query($connection, "INSERT INTO Developer (name) VALUES ('$name')")) {
                             echo "<p> Inserted developer in database";
@@ -77,7 +75,6 @@
                     echo "$name";
                     $result = mysqli_query($connection, "SELECT name FROM Publisher WHERE name = '$name'");
                     $row = mysqli_fetch_assoc($result);
-                    $name2;
                     if (is_null($row)) {
                         if (mysqli_query($connection, "INSERT INTO Publisher (name) VALUES ('$name')")) {
                             echo "<p> Inserted publisher in database";
