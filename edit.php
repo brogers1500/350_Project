@@ -37,16 +37,25 @@
                 if (isset($_POST['name'])) {
                     $name = $_POST['name'];
                     echo "$name";
-                    $result = mysqli_query($connection, "SELECT name FROM Platform WHERE name = '$name'");
-                    $row = mysqli_fetch_assoc($result);
-                    if (is_null($row)) {
-                        if (mysqli_query($connection, "INSERT INTO Platform (name) VALUES ('$name')")) {
-                            echo "<p> Inserted platform in database";
+                    // Check if platform is already in database
+                    $query ="SELECT name FROM Platform WHERE name = ?";
+                    if ($prepared = mysqli_prepare($connection, $query)) {
+                        mysqli_stmt_bind_param($prepared, "s", $name);
+                        mysqli_stmt_execute($prepared);
+                        mysqli_stmt_bind_result($prepared, $col_name);
+                        if (mysqli_stmt_fetch($prepared)) {
+                            echo "<p>Platform already in database</p>";
                         } else {
-                            echo "<p> Error: platform could not be inserted</p>";
+                            // Insert platform into database
+                            $insert = "INSERT INTO Platform (name) VALUES (?)";
+                            if ($prepared = mysqli_prepare($connection, $insert)) {
+                                mysqli_stmt_bind_param($prepared, "s", $name);
+                                mysqli_stmt_execute($prepared);
+                            }
+                            echo "<p>Platform inserted into database</p>";
                         }
                     } else {
-                        echo "<p>Platform already in database</p>";
+                        echo "<p>Error: Could not submit</p>";
                     }
                 }
             } else if (isset($_POST['developer_insert'])) {
