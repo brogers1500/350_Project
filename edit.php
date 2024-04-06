@@ -86,7 +86,37 @@
                     }
                 }
             } else if (isset($_POST['review_insert'])) {
-                echo "review_insert set";
+                echo "<p>publisher_insert set</p>";
+                $review;
+                $reviewer;
+                $game;
+                if (isset($_POST['game']) && isset($_POST['review']) && isset($_POST['reviewer'])) {
+                    $review = $_POST['review'];
+                    $reviewer = $_POST['reviewer'];
+                    $game = $_POST['game'];
+                    echo "Game = " . $game . " - Review = " . $review . " - Reviewer = " . $reviewer;
+                    // Check if game is in database
+                    $result = mysqli_query($connection, "SELECT id FROM Game WHERE title = '$game'");
+                    $row = mysqli_fetch_assoc($result);
+                    if (is_null($row)) {
+                        echo "<p>Game is not in database</p>";
+                    } else {
+                        $game = $row['id'];
+                        echo "<p>Game id = '$game'</p>";
+                        $result = mysqli_query($connection, "SELECT review, reviewer FROM Review WHERE game = '$game' AND reviewer = '$reviewer'");
+                        $row = mysqli_fetch_assoc($result);
+                        // Check if review is already in database
+                        if (is_null($row)) {
+                            if (mysqli_query($connection, "INSERT INTO Review (reviewer, review, game) VALUES ('$reviewer', '$review', '$game')")) {
+                                echo "<p> Inserted review in database";
+                            } else {
+                                echo "<p> Error: review could not be inserted</p>";
+                            }
+                        } else {
+                            echo "<p>Review from reviewer for game already in database</p>";
+                        }
+                    }
+                }
             }
         }
     ?>
@@ -199,12 +229,16 @@
         <legend>Review</legend>
         <table>
         <tr>
+            <td><label>Game</label></td>
+            <td><input type="text" name="game"><br></td>
+        </tr>
+        <tr>
             <td><label>Reviewer</label></td>
-            <td><input type="text" name="name"><br></td>
+            <td><input type="text" name="reviewer"><br></td>
         </tr>
         <tr>
             <td><label>Review</label></td>
-            <td><input type="text" name="name"><br></td>
+            <td><input type="text" name="review"><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="review_insert" value="Insert"></td>
