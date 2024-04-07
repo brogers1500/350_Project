@@ -64,16 +64,25 @@
                 if (isset($_POST['name'])) {
                     $name = $_POST['name'];
                     echo "$name";
-                    $result = mysqli_query($connection, "SELECT name FROM Developer WHERE name = '$name'");
-                    $row = mysqli_fetch_assoc($result);
-                    if (is_null($row)) {
-                        if (mysqli_query($connection, "INSERT INTO Developer (name) VALUES ('$name')")) {
-                            echo "<p> Inserted developer in database";
+                    // Check if developer is already in database
+                    $query ="SELECT name FROM Developer WHERE name = ?";
+                    if ($prepared = mysqli_prepare($connection, $query)) {
+                        mysqli_stmt_bind_param($prepared, "s", $name);
+                        mysqli_stmt_execute($prepared);
+                        mysqli_stmt_bind_result($prepared, $col_name);
+                        if (mysqli_stmt_fetch($prepared)) {
+                            echo "<p>Developer already in database</p>";
                         } else {
-                            echo "<p> Error: developer could not be inserted</p>";
+                            // Insert developer into database
+                            $insert = "INSERT INTO Developer (name) VALUES (?)";
+                            if ($prepared = mysqli_prepare($connection, $insert)) {
+                                mysqli_stmt_bind_param($prepared, "s", $name);
+                                mysqli_stmt_execute($prepared);
+                            }
+                            echo "<p>Developer inserted into database</p>";
                         }
                     } else {
-                        echo "<p>Developer already in database</p>";
+                        echo "<p>Error: Could not submit</p>";
                     }
                 }
             } else if (isset($_POST['publisher_insert'])) {
@@ -82,20 +91,29 @@
                 if (isset($_POST['name'])) {
                     $name = $_POST['name'];
                     echo "$name";
-                    $result = mysqli_query($connection, "SELECT name FROM Publisher WHERE name = '$name'");
-                    $row = mysqli_fetch_assoc($result);
-                    if (is_null($row)) {
-                        if (mysqli_query($connection, "INSERT INTO Publisher (name) VALUES ('$name')")) {
-                            echo "<p> Inserted publisher in database";
+                    // Check if publisher is already in database
+                    $query ="SELECT name FROM Publisher WHERE name = ?";
+                    if ($prepared = mysqli_prepare($connection, $query)) {
+                        mysqli_stmt_bind_param($prepared, "s", $name);
+                        mysqli_stmt_execute($prepared);
+                        mysqli_stmt_bind_result($prepared, $col_name);
+                        if (mysqli_stmt_fetch($prepared)) {
+                            echo "<p>Publisher already in database</p>";
                         } else {
-                            echo "<p> Error: publisher could not be inserted</p>";
+                            // Insert publisher into database
+                            $insert = "INSERT INTO Publisher (name) VALUES (?)";
+                            if ($prepared = mysqli_prepare($connection, $insert)) {
+                                mysqli_stmt_bind_param($prepared, "s", $name);
+                                mysqli_stmt_execute($prepared);
+                            }
+                            echo "<p>Publisher inserted into database</p>";
                         }
                     } else {
-                        echo "<p>Publisher already in database</p>";
+                        echo "<p>Error: Could not submit</p>";
                     }
                 }
             } else if (isset($_POST['review_insert'])) {
-                echo "<p>publisher_insert set</p>";
+                echo "<p>review_insert set</p>";
                 $review;
                 $reviewer;
                 $game;
