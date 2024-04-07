@@ -123,24 +123,36 @@
                     $game = $_POST['game'];
                     echo "Game = " . $game . " - Review = " . $review . " - Reviewer = " . $reviewer;
                     // Check if game is in database
-                    $result = mysqli_query($connection, "SELECT id FROM Game WHERE title = '$game'");
-                    $row = mysqli_fetch_assoc($result);
-                    if (is_null($row)) {
-                        echo "<p>Game is not in database</p>";
-                    } else {
-                        $game = $row['id'];
-                        echo "<p>Game id = '$game'</p>";
-                        $result = mysqli_query($connection, "SELECT review, reviewer FROM Review WHERE game = '$game' AND reviewer = '$reviewer'");
-                        $row = mysqli_fetch_assoc($result);
-                        // Check if review is already in database
-                        if (is_null($row)) {
-                            if (mysqli_query($connection, "INSERT INTO Review (reviewer, review, game) VALUES ('$reviewer', '$review', '$game')")) {
-                                echo "<p> Inserted review in database";
-                            } else {
-                                echo "<p> Error: review could not be inserted</p>";
+                    $query = "SELECT id FROM Game WHERE title = ?";
+                    if ($prepared = mysqli_prepare($connection, $query)) {
+                        mysqli_stmt_bind_param($prepared, "s", $game);
+                        mysqli_stmt_execute($prepared);
+                        mysqli_stmt_bind_result($prepared, $col_id);
+                        if (mysqli_stmt_fetch($prepared)) {
+                            mysqli_stmt_close($prepared);
+                            $game = $col_id;
+                            echo "<p>Game ID = '$game'";
+                            // Check if game already has review from reviewer in database
+                            $query = "SELECT review, reviewer FROM Review WHERE game = ? AND reviewer = ?";
+                            if ($prepared = mysqli_prepare($connection, $query)) {   
+                                mysqli_stmt_bind_param($prepared, "is", $game, $reviewer);
+                                mysqli_stmt_execute($prepared);
+                                mysqli_stmt_bind_result($prepared, $col_review, $col_reviewer);
+                                if (mysqli_stmt_fetch($prepared)) {
+                                    echo "<p>Review from reviewer for game already in database</p>";
+                                } else {
+                                    // Insert review into database
+                                    mysqli_stmt_close($prepared);
+                                    $insert = "INSERT INTO Review (reviewer, review, game) VALUES (?, ?, ?)";
+                                    if ($prepared = mysqli_prepare($connection, $insert)) {
+                                        mysqli_stmt_bind_param($prepared, "ssi", $reviewer, $review, $game);
+                                        mysqli_stmt_execute($prepared);
+                                        echo "<p>Review inserted in database</p>";
+                                    }
+                                }
                             }
                         } else {
-                            echo "<p>Review from reviewer for game already in database</p>";
+                            echo "<p>Game not in database</p>";
                         }
                     }
                 }
