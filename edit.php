@@ -30,7 +30,47 @@
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Check which submit button was pressed and insert data
             if (isset($_POST['game_insert'])) {
-                echo "game_insert set";
+                echo "<p>game_insert set</p>";
+                $title = $_POST['title'];
+                $release = $_POST['release'];
+                $singleplayer = $_POST['singleplayer'];
+                $multiplayer = $_POST['multiplayeri'];
+                $rating = $_POST['rating'];
+                $developer = $_POST['developer'];
+                $publisher = $_POST['publisher'];
+                $genre = $_POST['genre'];
+                $platform = $_POST['platform'];
+                echo "<p>Title = '$title'<br>Release Date = '$release'<br>Singleplayer = '$singleplayer'<br>Multiplayer = '$multiplayer'<br>Rating = '$rating'<br>Developer = '$developer'<br>Publisher = '$publisher'</p>";
+                // Check if developer is in database
+                $query = "SELECT id FROM Developer WHERE name = ?";
+                if ($prepared = mysqli_prepare($connection, $query)) {
+                    mysqli_stmt_bind_param($prepared, "s", $developer);
+                    mysqli_stmt_execute($prepared);
+                    mysqli_stmt_bind_result($prepared, $col_id);
+                    if (mysqli_stmt_fetch($prepared)) {
+                        mysqli_stmt_close($prepared);
+                        $developer = $col_id;
+                    } else {
+                        $developer = 0;
+                    }
+                }
+                echo "<p>dev id = '$developer'</p>";
+                // Check if publisher is in database
+                $query = "SELECT id FROM Publisher WHERE name = ?";
+                if ($prepared = mysqli_prepare($connection, $query)) {
+                    mysqli_stmt_bind_param($prepared, "s", $developer);
+                    mysqli_stmt_execute($prepared);
+                    mysqli_stmt_bind_result($prepared, $col_id);
+                    if (mysqli_stmt_fetch($prepared)) {
+                        mysqli_stmt_close($prepared);
+                        $developer = $col_id;
+                    } else {
+                        $publisher = 0;
+                    }
+                }
+                echo "<p>pub id = '$publisher'</p>";
+                $genre = explode(',', $genre);
+                echo "<pre>";print_r($genre);echo"</pre>";
             } else if (isset($_POST['platform_insert'])) {
                 echo "<p>platform_insert set</p>";
                 $name;
@@ -122,7 +162,7 @@
                     $reviewer = $_POST['reviewer'];
                     $game = $_POST['game'];
                     echo "Game = " . $game . " - Review = " . $review . " - Reviewer = " . $reviewer;
-                    // Check if game is in database
+                    // Check if game is in database and get id
                     $query = "SELECT id FROM Game WHERE title = ?";
                     if ($prepared = mysqli_prepare($connection, $query)) {
                         mysqli_stmt_bind_param($prepared, "s", $game);
@@ -173,31 +213,31 @@
 	    <table>
 		<tr>
 	        <td><label>Title</label></td>
-		    <td><input type="text" name="title"><br></td>
+		    <td><input type="text" name="title" required><br></td>
 		</tr>
 		<tr>
 		    <td><label>Developer</label></td>
-		    <td><input type="text" name="developer"><br></td>
+		    <td><input type="text" name="developer" required><br></td>
 		</tr>
 		<tr>
 		    <td><label>Publisher</label></td>
-		    <td><input type="text" name="publisher"><br></td>
+		    <td><input type="text" name="publisher" required><br></td>
 		</tr>
 		<tr>
 	        <td><label>Rating</label></td>
-	        <td><input type="text" name="rating"><br></td>
+	        <td><input type="text" name="rating" required><br></td>
 		</tr>
 		<tr>
 	        <td><label>Platforms</label></td>
-	        <td><input type="text" name="platform"><br></td>
+	        <td><input type="text" name="platform" required><br></td>
 		</tr>
 		<tr>
 	        <td><label>Genres</label></td>
-	        <td><input type="text" name="genre"><br></td>
+	        <td><input type="text" name="genre" required><br></td>
 		</tr>
 	    <tr>
 		    <td><label>Release Date</label></td>
-	        <td><input type="date" name="release"><br></td>
+	        <td><input type="date" name="release" required><br></td>
 		</tr>
 		<tr>
 	        <td><label>Singleplayer</label></td>
