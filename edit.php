@@ -443,31 +443,31 @@
 		</tr>
 		<tr>
 	        <td><label>New Title</label></td>
-		    <td><input type="text" name="title" required><br></td>
+		    <td><input type="text" name="new_title"><br></td>
 		</tr>
 		<tr>
 		    <td><label>Developer</label></td>
-		    <td><input type="text" name="developer" required><br></td>
+		    <td><input type="text" name="developer"><br></td>
 		</tr>
 		<tr>
 		    <td><label>Publisher</label></td>
-		    <td><input type="text" name="publisher" required><br></td>
+		    <td><input type="text" name="publisher"><br></td>
 		</tr>
 		<tr>
 	        <td><label>Rating</label></td>
-	        <td><input type="text" name="rating" required><br></td>
+	        <td><input type="text" name="rating"><br></td>
 		</tr>
 		<tr>
 	        <td><label>Platforms</label></td>
-	        <td><input type="text" name="platform" required><br></td>
+	        <td><input type="text" name="platform"><br></td>
 		</tr>
 		<tr>
 	        <td><label>Genres</label></td>
-	        <td><input type="text" name="genre" required><br></td>
+	        <td><input type="text" name="genre"><br></td>
 		</tr>
 	    <tr>
 		    <td><label>Release Date</label></td>
-	        <td><input type="date" name="release" required><br></td>
+	        <td><input type="date" name="release"><br></td>
 		</tr>
 		<tr>
 	        <td><label>Singleplayer</label></td>
@@ -478,7 +478,7 @@
 		    <td><input type="checkbox" name="multiplayer"><br></td>
 	    </tr>
         <tr>
-            <td><input type="submit" name="game_insert" value="Insert"></td>
+            <td><input type="submit" name="game_update" value="Update"></td>
         </tr>
 		</table>
         </fieldset>
