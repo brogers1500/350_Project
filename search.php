@@ -77,26 +77,108 @@
             if (empty($title) && empty($dev) && empty($pub) && empty($plat) && empty($genre)){
             $sql_select = $select_all;
         }
+            //Just title
            else if (!empty($title) && empty($dev) && empty($pub) && empty($plat) && empty($genre)){
                 $sql_select = $select_all . " WHERE Game.title LIKE ?";
         }
-
-            
+            //Just dev
+           else if (empty($title) && !empty($dev) && empty($pub) && empty($plat) && empty($genre)){
+                $sql_select = $select_all . " WHERE Developer.name = ?";
+        }
+            //Just pub
+            else if (empty($title) && empty($dev) && !empty($pub) && empty($plat) && empty($genre)){
+                $sql_select = $select_all . " WHERE Publisher.name = ?";
+        }
+            //Just plat
+            else if (empty($title) && empty($dev) && empty($pub) && !empty($plat) && empty($genre)){
+                 $sql_select = $select_all . " WHERE Platform.name = ?";
+        }
+            //Just genre
+            else if (empty($title) && empty($dev) && empty($pub) && empty($plat) && !empty($genre)){
+                 $sql_select = $select_all . " WHERE Genre.name = ?";
+        }
+            //Title and dev
+            else if (!empty($title) && !empty($dev) && empty($pub) && empty($plat) && empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Developer.name= ?";
+        }
+            //title and pub
+            else if (!empty($title) && empty($dev) && !empty($pub) && empty($plat) && empty($genre)){
+                $sql_select = $select_all . " WHERE Game.title = ? AND Publisher.name= ?";
+        }
+            //title and plat
+            else if (!empty($title) && empty($dev) && empty($pub) && !empty($plat) && empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Platform.name= ?";
+        }
+            //title and genre
+            else if (!empty($title) && empty($dev) && empty($pub) && empty($plat) && !empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Genre.name= ?";
+        }
+            //title, pub, dev
+            else if (!empty($title) && !empty($dev) && !empty($pub) && empty($plat) && empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Developer.name=? AND Publisher.name= ?";
+        }
+            //title, pub, plat
+            else if (!empty($title) && empty($dev) && !empty($pub) && !empty($plat) && empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Platform.name=? AND Publisher.name= ?";
+        }
+            //title, pub, genre
+            else if (!empty($title) && empty($dev) && !empty($pub) && empty($plat) && !empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Genre.name=? AND Publisher.name= ?";
+        }
+            //title, dev, play
+            else if (!empty($title) && !empty($dev) && empty($pub) && !empty($plat) && empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Developer.name=? AND Platform.name= ?";
+        }
+            //title, dev, genre
+            else if (!empty($title) && !empty($dev) && empty($pub) && empty($plat) && !empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Developer.name=? AND Genre.name= ?";
+        }
+            //Title, dev, pub, plat
+            else if (!empty($title) && !empty($dev) && !empty($pub) && !empty($plat) && empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Developer.name=? AND Publisher.name= ? AND Platform.name= ?";
+        }
+            //title, dev, pub, genre
+            else if (!empty($title) && !empty($dev) && !empty($pub) && empty($plat) && !empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Developer.name=? AND Publisher.name= ? AND Genre.name= ?";
+        }
+            //title, dev, pub, plat, genre
+            else if (!empty($title) && !empty($dev) && !empty($pub) && !empty($plat) && !empty($genre)){
+                 $sql_select = $select_all . " WHERE Game.title = ? AND Developer.name=? AND Publisher.name= ? AND Genre.name= ? AND Platform.name=?";
+        } 
         if($prepared = mysqli_prepare($connection, $sql_select)){
                  if (!empty($title) && empty($dev) && empty($pub) && empty($plat) && empty($genre)){
-
                         mysqli_stmt_bind_param($prepared, "s", $title);
+                    }
+                    else if (empty($title) && !empty($dev) && empty($pub) && empty($plat) && empty($genre)){
+                         mysqli_stmt_bind_param($prepared, "s", $dev);
+                    }
+                    else if (empty($title) && empty($dev) && !empty($pub) && empty($plat) && empty($genre)){
+                         mysqli_stmt_bind_param($prepared, "s", $pub);
+                    }
+                    else if (empty($title) && empty($dev) && empty($pub) && !empty($plat) && empty($genre)){
+                         mysqli_stmt_bind_param($prepared, "s", $plat);
+                    }
+                    else if (empty($title) && empty($dev) && empty($pub) && empty($plat) && !empty($genre)){
+                             mysqli_stmt_bind_param($prepared, "s", $genre);
+                    }
+                    else if (!empty($title) && !empty($dev) && empty($pub) && empty($plat) && empty($genre)){
+                         mysqli_stmt_bind_param($prepared, "ss", $title, $dev);
+                    }
+            else if (!empty($title) && empty($dev) && !empty($pub) && empty($plat) && empty($genre)){
+                         mysqli_stmt_bind_param($prepared, "ss", $title, $pub);
+                    }
+            else if (!empty($title) && empty($dev) && empty($pub) && empty($plat) && !empty($genre)){
+                         mysqli_stmt_bind_param($prepared, "ss", $title, $genre);
+                    }
+             else if (!empty($title) && empty($dev) && empty($pub) && !empty($plat) && empty($genre)){
+                         mysqli_stmt_bind_param($prepared, "ss", $title, $plat);
                     }
                      mysqli_stmt_execute($prepared);
                      mysqli_stmt_bind_result($prepared, $colTitle, $colMult, $colSing, $colRating, $colDate, $colGenre, $colPlat, $colDev, $colPub);         
 
         }
-     //    mysqli_stmt_close($prepared)
-        $lastTitle="";
         while(mysqli_stmt_fetch($prepared)){
                  echo "<tr> <td>" . $colTitle . "</td><td> " .$colMult."</td><td> ".$colSing."</td><td> " . $colDev . "</td><td> " .$colPub . "</td><td> " .$colPlat . "</td><td> " .$colGenre ."</td><td>" . $colRating ."</td><td>" . $colDate ."</td></tr>";
-      //       }
-  //          $lastTitle=$workingTitle;
         }
         ?>
         </table>
