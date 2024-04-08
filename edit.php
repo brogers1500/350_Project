@@ -34,13 +34,25 @@
                 $title = $_POST['title'];
                 $release = $_POST['release'];
                 $singleplayer = $_POST['singleplayer'];
-                $multiplayer = $_POST['multiplayeri'];
+                $multiplayer = $_POST['multiplayer'];
                 $rating = $_POST['rating'];
                 $developer = $_POST['developer'];
                 $publisher = $_POST['publisher'];
                 $genre = $_POST['genre'];
                 $platform = $_POST['platform'];
-                echo "<p>Title = '$title'<br>Release Date = '$release'<br>Singleplayer = '$singleplayer'<br>Multiplayer = '$multiplayer'<br>Rating = '$rating'<br>Developer = '$developer'<br>Publisher = '$publisher'</p>";
+
+                // Check if game is in database
+                $query = "SELECT title FROM Game WHERE title = ?";
+                if ($prepared = mysqli_prepare($connection, $query)) {
+                    mysqli_stmt_bind_param($prepared, "s", $title);
+                    mysqli_stmt_execute($prepared);
+                    mysqli_stmt_bind_result($prepared, $col_id);
+                    if (mysqli_stmt_fetch($prepared)) {
+                        $title = NULL;
+                        echo "<p>Game is already in database</p>";
+                    }
+                    mysqli_stmt_close($prepared);
+                }
                 // Check if developer is in database
                 $query = "SELECT id FROM Developer WHERE name = ?";
                 if ($prepared = mysqli_prepare($connection, $query)) {
@@ -48,29 +60,122 @@
                     mysqli_stmt_execute($prepared);
                     mysqli_stmt_bind_result($prepared, $col_id);
                     if (mysqli_stmt_fetch($prepared)) {
-                        mysqli_stmt_close($prepared);
                         $developer = $col_id;
                     } else {
-                        $developer = 0;
+                        $developer = NULL;
                     }
+                    mysqli_stmt_close($prepared);
                 }
                 echo "<p>dev id = '$developer'</p>";
                 // Check if publisher is in database
                 $query = "SELECT id FROM Publisher WHERE name = ?";
                 if ($prepared = mysqli_prepare($connection, $query)) {
-                    mysqli_stmt_bind_param($prepared, "s", $developer);
+                    mysqli_stmt_bind_param($prepared, "s", $publisher);
                     mysqli_stmt_execute($prepared);
                     mysqli_stmt_bind_result($prepared, $col_id);
                     if (mysqli_stmt_fetch($prepared)) {
-                        mysqli_stmt_close($prepared);
-                        $developer = $col_id;
+                        $publisher = $col_id;
                     } else {
-                        $publisher = 0;
+                        $publisher = NULL;
                     }
+                    mysqli_stmt_close($prepared);
                 }
                 echo "<p>pub id = '$publisher'</p>";
-                $genre = explode(',', $genre);
+                // Check if genre is in database
+                $genre = preg_split('/[\s,]+/', $genre);
+                for ($i = 0; $i < count($genre); $i++) {
+                    echo "<p>$genre[$i]</p>";
+                    $query = "SELECT id FROM Genre WHERE name = ?";
+                    if ($prepared = mysqli_prepare($connection, $query)) {
+                        mysqli_stmt_bind_param($prepared, "s", $genre[$i]);
+                        mysqli_stmt_execute($prepared);
+                        mysqli_stmt_bind_result($prepared, $col_id);
+                        if (mysqli_stmt_fetch($prepared)) {
+                            echo "<p>$col_id</p>";
+                            $genre[$i] = $col_id;
+                        } else {
+                            echo "<p>Genre '$genre[$i]' is not in database</p>";
+                            $genre = NULL;
+                            break;
+                        }
+                        mysqli_stmt_close($prepared);
+                    }
+                }
+                // Check if platform is in database
+                $platform = preg_split('/[\s,]+/', $platform);
+                for ($i = 0; $i < count($platform); $i++) {
+                    echo "<p>$platform[$i]</p>";
+                    $query = "SELECT id FROM Platform WHERE name = ?";
+                    if ($prepared = mysqli_prepare($connection, $query)) {
+                        mysqli_stmt_bind_param($prepared, "s", $platform[$i]);
+                        mysqli_stmt_execute($prepared);
+                        mysqli_stmt_bind_result($prepared, $col_id);
+                        if (mysqli_stmt_fetch($prepared)) {
+                            $platform[$i] = $col_id;
+                        } else {
+                            echo "<p>Platform '$platform[i]' is not in database</p>";
+                            $platform = NULL;
+                            break;
+                        }
+                        mysqli_stmt_close($prepared);
+                    }
+                }
+                // Set the modes 
+                if ($multiplayer == "on") {
+                    $multiplayer = 1;
+                } else {
+                    $multiplayer = 0;
+                }
+                if ($singleplayer == "on") {
+                    $singleplayer = 1;
+                } else {
+                    $singleplayer = 0;
+                }
                 echo "<pre>";print_r($genre);echo"</pre>";
+                echo "<pre>";print_r($platform);echo"</pre>";
+                echo "<p>Title = '$title'<br>Release Date = '$release'<br>Singleplayer = '$singleplayer'<br>Multiplayer = '$multiplayer'<br>Rating = '$rating'<br>Developer = '$developer'<br>Publisher = '$publisher'</p>";
+                
+                if ($title != NULL && $developer != NULL && $publisher != NULL && $genre != NULL && $platform != NULL) {
+                    $game_insert = "INSERT INTO Game (title, release_date, developer, publisher, is_singleplayer, is_multiplayer, rating) VALUES (?, ?, ?, ?, ?, ?, ?)";     
+                    if ($prepared = mysqli_prepare($connection, $game_insert)) {
+                        mysqli_stmt_bind_param($prepared, "ssiiiis", $title, $release, $developer, $publisher, $singleplayer, $multiplayer, $rating);
+                        mysqli_stmt_execute($prepared);
+                        mysqli_stmt_close($prepared);
+                    }
+                    // Get id of newly inserted game
+                    $game_id;
+                    $query = "SELECT id FROM Game WHERE title = ?";
+                    if ($prepared = mysqli_prepare($connection, $query)) {
+                        mysqli_stmt_bind_param($prepared, "s", $title);
+                        mysqli_stmt_execute($prepared);
+                        mysqli_stmt_bind_result($prepared, $col_id);
+                        if (mysqli_stmt_fetch($prepared)) {
+                            $game_id = $col_id;
+                        }
+                    }
+                    // Insert into Game_Genre table
+                    mysqli_stmt_close($prepared);
+                    for ($i = 0; $i < count($genre); $i++) {
+                        $insert_genre = "INSERT INTO Game_Genre (game_id, genre_id) VALUES (?, ?)";
+                        if ($prepared = mysqli_prepare($connection, $insert_genre)) {
+                            mysqli_stmt_bind_param($prepared, "ii", $game_id, $genre[$i]);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_close($prepared);
+                        }
+                    }
+                    // Insert into Game_Platform table
+                    for ($i = 0; $i < count($platform); $i++) {
+                        $insert_platform = "INSERT INTO Game_Platform (game_id, platform_id) VALUES (?, ?)";
+                        if ($prepared = mysqli_prepare($connection, $insert_platform)) {
+                            mysqli_stmt_bind_param($prepared, "ii", $game_id, $platform[$i]);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_close($prepared);
+                        }
+                    }
+                    echo "<p>Game inserted into database</p>";
+                } else {
+                    echo "<p>Game could not be inserted into database</p>";
+                }   
             } else if (isset($_POST['platform_insert'])) {
                 echo "<p>platform_insert set</p>";
                 $name;
