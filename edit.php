@@ -27,6 +27,7 @@
             echo "<p>Connected to the server</p>";
         }
 
+
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Check which submit button was pressed and insert data
             if (isset($_POST['game_insert'])) {
@@ -175,7 +176,7 @@
                     echo "<p>Game inserted into database</p>";
                 } else {
                     echo "<p>Game could not be inserted into database</p>";
-                }   
+                }
             } else if (isset($_POST['platform_insert'])) {
                 echo "<p>platform_insert set</p>";
                 $name;
@@ -310,7 +311,7 @@
     name for submit inputs could be used. If submit with name 'game_insert' is pressed, execute query to
     INSERT into Game table. Will need to include Edit and maybe Delete submits later on -->
 	<h2>Edit</h2>
-    
+    <h3>Insert</h3> 
     <!-- Game Form -->
 	<form action="edit.php" method="post">
         <fieldset>
@@ -430,6 +431,57 @@
         </table>
         </fieldset>
     </form>
+
+    <h3>Update</h3>
+	<form action="edit.php" method="post">
+        <fieldset>
+        <legend>Game</legend>
+	    <table>
+		<tr>
+	        <td><label>Title</label></td>
+		    <td><input type="text" name="title" required><br></td>
+		</tr>
+		<tr>
+	        <td><label>New Title</label></td>
+		    <td><input type="text" name="title" required><br></td>
+		</tr>
+		<tr>
+		    <td><label>Developer</label></td>
+		    <td><input type="text" name="developer" required><br></td>
+		</tr>
+		<tr>
+		    <td><label>Publisher</label></td>
+		    <td><input type="text" name="publisher" required><br></td>
+		</tr>
+		<tr>
+	        <td><label>Rating</label></td>
+	        <td><input type="text" name="rating" required><br></td>
+		</tr>
+		<tr>
+	        <td><label>Platforms</label></td>
+	        <td><input type="text" name="platform" required><br></td>
+		</tr>
+		<tr>
+	        <td><label>Genres</label></td>
+	        <td><input type="text" name="genre" required><br></td>
+		</tr>
+	    <tr>
+		    <td><label>Release Date</label></td>
+	        <td><input type="date" name="release" required><br></td>
+		</tr>
+		<tr>
+	        <td><label>Singleplayer</label></td>
+			<td><input type="checkbox" name="singleplayer"><br></td>
+        </tr>
+        <tr>
+			<td><label>Multiplayer</label></td>
+		    <td><input type="checkbox" name="multiplayer"><br></td>
+	    </tr>
+        <tr>
+            <td><input type="submit" name="game_insert" value="Insert"></td>
+        </tr>
+		</table>
+        </fieldset>
     </body>
 
 </html>
