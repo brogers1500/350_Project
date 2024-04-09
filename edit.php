@@ -317,6 +317,55 @@
                     $title = $_POST['title'];
                     echo "<p>title was inputted</p>";
 
+                    // Update developer
+                    if (isset($_POST['developer']) && !empty($developer)) {
+                        // Get developer id
+                        $query = "SELECT id FROM Developer WHERE name = ?";
+                        if ($prepared = mysqli_prepare($connection, $query)) {
+                            mysqli_stmt_bind_param($prepared, "s", $developer);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_bind_result($prepared, $col_id);
+                            if (mysqli_stmt_fetch($prepared)) {
+                                mysqli_stmt_close($prepared);
+                                $developer = $col_id;
+                                // Set new developer
+                                $developer_update = "UPDATE Game SET developer = ? WHERE title = ?";
+                                if ($prepared = mysqli_prepare($connection, $developer_update)) {
+                                    mysqli_stmt_bind_param($prepared, "is", $developer, $title);
+                                    mysqli_stmt_execute($prepared);
+                                    echo "<p>New developer was set</p>";
+                                }
+                            } else {
+                                echo "<p>New developer is not in database</p>";
+                            }
+                            mysqli_stmt_close($prepared);
+                        }
+                    }
+        
+                    // Update publisher
+                    if (isset($_POST['publisher']) && !empty($publisher)) {
+                        // Get publisher id
+                        $query = "SELECT id FROM Publisher WHERE name = ?";
+                        if ($prepared = mysqli_prepare($connection, $query)) {
+                            mysqli_stmt_bind_param($prepared, "s", $publisher);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_bind_result($prepared, $col_id);
+                            if (mysqli_stmt_fetch($prepared)) {
+                                mysqli_stmt_close($prepared);
+                                $publisher = $col_id;
+                                // Set new publisher
+                                $publisher_update = "UPDATE Game SET publisher = ? WHERE title = ?";
+                                if ($prepared = mysqli_prepare($connection, $publisher_update)) {
+                                    mysqli_stmt_bind_param($prepared, "is", $publisher, $title);
+                                    mysqli_stmt_execute($prepared);
+                                    echo "<p>New publisher was set</p>";
+                                }
+                            } else {
+                                echo "<p>New publisher is not in database</p>";
+                            }
+                            mysqli_stmt_close($prepared);
+                        }
+                    }
                     // Update release date
                     if (isset($_POST['release']) && !empty($_POST['release'])) {
                         $release = $_POST['release'];
@@ -366,8 +415,6 @@
                             mysqli_stmt_close($prepared);
                         }
                     }
-                } else {
-                    echo "<p>Title was not inputted</p>"; 
                 }
             } 
         }
