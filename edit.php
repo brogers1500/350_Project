@@ -365,7 +365,26 @@
                             }
                             mysqli_stmt_close($prepared);
                         }
+                    } 
+
+                    // Update rating
+                    if (isset($_POST['rating']) && !empty($_POST['rating'])) {
+                        $release = $_POST['release'];
+                        echo "<p>Rating $rating was inputted</p>";
+                        $rating = strtoupper($rating);
+                        if ($rating === "E" || $rating === "E10" || $rating === "T" || $rating === "M") {
+                            $rating_update = "UPDATE Game SET rating = ? WHERE title = ?";
+                            if ($prepared = mysqli_prepare($connection, $rating_update)) {
+                                mysqli_stmt_bind_param($prepared, "ss", $rating, $title);
+                                mysqli_stmt_execute($prepared);
+                                mysqli_stmt_close($prepared);
+                            }
+                            echo "<p>New rating</p>";
+                        } else {
+                            echo "<p>New rating is not valid. Enter E, E10, T, or M.</p>";
+                        }
                     }
+
                     // Update release date
                     if (isset($_POST['release']) && !empty($_POST['release'])) {
                         $release = $_POST['release'];
