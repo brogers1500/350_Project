@@ -306,9 +306,6 @@
                 echo "<p>game_update set</p>";
                 //$singleplayer = $_POST['singleplayer'];
                 //$multiplayer = $_POST['multiplayer'];
-                $rating = $_POST['rating'];
-                $developer = $_POST['developer'];
-                $publisher = $_POST['publisher'];
                 $genre = $_POST['genre'];
                 $platform = $_POST['platform'];
                 
@@ -396,6 +393,30 @@
                             mysqli_stmt_close($prepared);
                         }
                         echo "<p>Release date was set to $release</p>";
+                    }
+
+                    // Update singleplayer
+                    if (isset($_POST['singleplayer']) && is_numeric($_POST['singleplayer'])) {
+                        $singleplayer = $_POST['singleplayer'];
+                        $singleplayer_update = "UPDATE Game SET is_singleplayer = ? WHERE title = ?";
+                        if ($prepared = mysqli_prepare($connection, $singleplayer_update)) {
+                            mysqli_stmt_bind_param($prepared, "is", $singleplayer, $title);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_close($prepared);
+                        }
+                        echo "<p>Singleplayer was set to $singleplayer</p>";
+                    }
+
+                    // Update multiplayer
+                    if (isset($_POST['multiplayer']) && is_numeric($_POST['multiplayer'])) {
+                        $multiplayer = $_POST['multiplayer'];
+                        $multiplayer_update = "UPDATE Game SET is_multiplayer = ? WHERE title = ?";
+                        if ($prepared = mysqli_prepare($connection, $multiplayer_update)) {
+                            mysqli_stmt_bind_param($prepared, "is", $multiplayer, $title);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_close($prepared);
+                        }
+                        echo "<p>Multiplayer was set to $multiplayer</p>";
                     }
                     
                     // Update title
@@ -604,12 +625,14 @@
 		</tr>
 		<tr>
 	        <td><label>Singleplayer</label></td>
-			<td><input type="checkbox" name="singleplayer"><br></td>
+			<td><input type="radio" name="singleplayer" value=1>Yes<br>
+			<input type="radio" name="singleplayer" value=0>No<br></td>
         </tr>
-        <tr>
-			<td><label>Multiplayer</label></td>
-		    <td><input type="checkbox" name="multiplayer"><br></td>
-	    </tr>
+		<tr>
+	        <td><label>Multiplayer</label></td>
+			<td><input type="radio" name="multiplayer" value=1>Yes<br>
+			<input type="radio" name="multiplayer" value=0>No<br></td>
+        </tr>
         <tr>
             <td><input type="submit" name="game_update" value="Update"></td>
         </tr>
