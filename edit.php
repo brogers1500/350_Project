@@ -304,9 +304,6 @@
                 }
             } else if (isset($_POST['game_update'])) {
                 echo "<p>game_update set</p>";
-                $title = $_POST['title'];
-                $new_title = $_POST['new_title'];
-                $release = $_POST['release'];
                 //$singleplayer = $_POST['singleplayer'];
                 //$multiplayer = $_POST['multiplayer'];
                 $rating = $_POST['rating'];
@@ -315,37 +312,62 @@
                 $genre = $_POST['genre'];
                 $platform = $_POST['platform'];
                 
-                $query = "SELECT title FROM Game WHERE title = ?";
-                if ($prepared = mysqli_prepare($connection, $query)) {
-                    mysqli_stmt_bind_param($prepared, "s", $title);
-                    mysqli_stmt_execute($prepared);
-                    mysqli_stmt_bind_result($prepared, $col_id);
-                    if (mysqli_stmt_fetch($prepared)) {
-                        echo "<p>Game is in database</p>";
-                        mysqli_stmt_close($prepared);
+
+                if (isset($_POST['title'])) {
+                    $title = $_POST['title'];
+                    echo "<p>title was inputted</p>";
+
+                    // Update release date
+                    if (isset($_POST['release']) && !empty($_POST['release'])) {
+                        $release = $_POST['release'];
+                        echo "<p>Release date $release was inputted</p>";
+                        $release_update = "UPDATE Game SET release_date = ? WHERE title = ?";
+                        if ($prepared = mysqli_prepare($connection, $release_update)) {
+                            mysqli_stmt_bind_param($prepared, "ss", $release, $title);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_close($prepared);
+                        }
+                        echo "<p>Release date was set to $release</p>";
+                    }
+                    
+                    // Update title
+                    if (isset($_POST['new_title']) && !empty($_POST['new_title'])) {
+                        echo "<p>New title was inputted</p>";
+                        $new_title = $_POST['new_title'];
                         $query = "SELECT title FROM Game WHERE title = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
-                            mysqli_stmt_bind_param($prepared, "s", $new_title);
+                            mysqli_stmt_bind_param($prepared, "s", $title);
                             mysqli_stmt_execute($prepared);
-                            mysqli_stmt_bind_result($prepared, $col_title);
+                            mysqli_stmt_bind_result($prepared, $col_id);
                             if (mysqli_stmt_fetch($prepared)) {
-                                echo "<p>Game in database already has the title $col_title</p>";
-                            } else {
-                                //mysqli_stmt_close($prepaered);
-                                echo "<p>No game has the title $col_title</p>";
-                                $title_update = "UPDATE Game SET title = ? WHERE title = ?";
-                                if ($prepared = mysqli_prepare($connection, $title_update)) {
-                                    mysqli_stmt_bind_param($prepared, "ss", $new_title, $title);
+                                echo "<p>Game is in database</p>";
+                                mysqli_stmt_close($prepared);
+                                $query = "SELECT title FROM Game WHERE title = ?";
+                                if ($prepared = mysqli_prepare($connection, $query)) {
+                                    mysqli_stmt_bind_param($prepared, "s", $new_title);
                                     mysqli_stmt_execute($prepared);
+                                    mysqli_stmt_bind_result($prepared, $col_title);
+                                    if (mysqli_stmt_fetch($prepared)) {
+                                        echo "<p>Game in database already has the title $col_title</p>";
+                                    } else {
+                                        //mysqli_stmt_close($prepaered);
+                                        echo "<p>No game has the title $col_title</p>";
+                                        $title_update = "UPDATE Game SET title = ? WHERE title = ?";
+                                        if ($prepared = mysqli_prepare($connection, $title_update)) {
+                                            mysqli_stmt_bind_param($prepared, "ss", $new_title, $title);
+                                            mysqli_stmt_execute($prepared);
+                                        }
+                                        echo "<p>$title was set to $new_title</p>";
+                                    }
                                 }
-                                echo "<p>$title was set to $new_title</p>";
+                            } else {
+                                echo "<p>Game is not in database</p>";
                             }
+                            mysqli_stmt_close($prepared);
                         }
-                        
-                    } else {
-                        echo "<p>Game is not in database</p>";
                     }
-                    mysqli_stmt_close($prepared);
+                } else {
+                    echo "<p>Title was not inputted</p>"; 
                 }
             } 
         }
