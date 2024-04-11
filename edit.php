@@ -304,11 +304,10 @@
                 }
             } else if (isset($_POST['game_update'])) {
                 echo "<p>game_update set</p>";
-                //$singleplayer = $_POST['singleplayer'];
-                //$multiplayer = $_POST['multiplayer'];
-                $genre = $_POST['genre'];
+                $developer = $_POST['developer'];
+                $publisher = $_POST['publisher'];
                 $platform = $_POST['platform'];
-                
+                var_dump($_POST); 
 
                 if (isset($_POST['title'])) {
                     $title = $_POST['title'];
@@ -316,7 +315,9 @@
 
                     // Update developer
                     if (isset($_POST['developer']) && !empty($developer)) {
+                        $developer = $_POST['developer'];
                         // Get developer id
+                        echo "<p>Developer $developer was set</p>";
                         $query = "SELECT id FROM Developer WHERE name = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
                             mysqli_stmt_bind_param($prepared, "s", $developer);
@@ -341,7 +342,9 @@
         
                     // Update publisher
                     if (isset($_POST['publisher']) && !empty($publisher)) {
+                        $publisher = $_POST['publisher'];
                         // Get publisher id
+                        echo "<p>Publisher $publisher was set</p>";
                         $query = "SELECT id FROM Publisher WHERE name = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
                             mysqli_stmt_bind_param($prepared, "s", $publisher);
@@ -366,9 +369,8 @@
 
                     // Update rating
                     if (isset($_POST['rating']) && !empty($_POST['rating'])) {
-                        $release = $_POST['release'];
+                        $rating = strtoupper($_POST['rating']);
                         echo "<p>Rating $rating was inputted</p>";
-                        $rating = strtoupper($rating);
                         if ($rating === "E" || $rating === "E10" || $rating === "T" || $rating === "M") {
                             $rating_update = "UPDATE Game SET rating = ? WHERE title = ?";
                             if ($prepared = mysqli_prepare($connection, $rating_update)) {
@@ -394,7 +396,52 @@
                         }
                         echo "<p>Release date was set to $release</p>";
                     }
-
+                   
+                    // Update genre 
+                    // Check if genre is in database
+                    if (isset($_POST['genre']) && !empty($_POST['genre'])) {
+                        $genre = $_POST['genre'];
+                        $genre = preg_split('/[\s,]+/', $genre);
+                        for ($i = 0; $i < count($genre); $i++) {
+                            echo "<p>$genre[$i]</p>";
+                            $query = "SELECT id FROM Genre WHERE name = ?";
+                            if ($prepared = mysqli_prepare($connection, $query)) {
+                                mysqli_stmt_bind_param($prepared, "s", $genre[$i]);
+                                mysqli_stmt_execute($prepared);
+                                mysqli_stmt_bind_result($prepared, $col_id);
+                                if (mysqli_stmt_fetch($prepared)) {
+                                    echo "<p>$col_id</p>";
+                                    $genre[$i] = $col_id;
+                                }
+                            } else {
+                                echo "<p>Genre '$genre[$i]' is not in database</p>";
+                                $genre = NULL;
+                                break;
+                            }
+                            mysqli_stmt_close($prepared);
+                        }
+                        // Get game id
+                        $game_id;
+                        $query = "SELECT id FROM Game WHERE title = ?";
+                        if ($prepared = mysqli_prepare($connection, $query)) {
+                            mysqli_stmt_bind_param($prepared, "s", $title);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_bind_result($prepared, $col_id);
+                            if (mysqli_stmt_fetch($prepared)) {
+                                mysqli_stmt_close($prepared);
+                                $game_id = $col_id;
+                                $num_rows;
+                                //$query = "SELECT * FROM Game_Genre WHERE game_id = $game_id";
+                                $delete = "DELETE FROM Game_Genre WHERE game_id = $game_id";
+                                $result = mysqli_query($connection, $delete);
+                                for ($i = 0; $i < count($genre); $i++) {
+                                    $insert = "INSERT INTO Game_Genre (game_id, genre_id) VALUES ($game_id, $genre[$i])";
+                                    $result = mysqli_query($connection, $insert);
+                                }
+                            }
+                        } 
+                    }
+                
                     // Update singleplayer
                     if (isset($_POST['singleplayer']) && is_numeric($_POST['singleplayer'])) {
                         $singleplayer = $_POST['singleplayer'];
