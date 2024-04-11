@@ -441,6 +441,48 @@
                             }
                         } 
                     }
+
+                    // Update platform
+                    if (isset($_POST['platform']) && !empty($_POST['platform'])) {
+                        $platform = $_POST['platform'];
+                        $platform = preg_split('/[\s,]+/', $platform);
+                        for ($i = 0; $i < count($platform); $i++) {
+                            echo "<p>$platform[$i]</p>";
+                            $query = "SELECT id FROM Platform WHERE name = ?";
+                            if ($prepared = mysqli_prepare($connection, $query)) {
+                                mysqli_stmt_bind_param($prepared, "s", $platform[$i]);
+                                mysqli_stmt_execute($prepared);
+                                mysqli_stmt_bind_result($prepared, $col_id);
+                                if (mysqli_stmt_fetch($prepared)) {
+                                    echo "<p>$col_id</p>";
+                                    $platform[$i] = $col_id;
+                                }
+                            } else {
+                                echo "<p>Genre '$platform[$i]' is not in database</p>";
+                                $platform = NULL;
+                                break;
+                            }
+                            mysqli_stmt_close($prepared);
+                        }
+                        // Get game id
+                        $game_id;
+                        $query = "SELECT id FROM Game WHERE title = ?";
+                        if ($prepared = mysqli_prepare($connection, $query)) {
+                            mysqli_stmt_bind_param($prepared, "s", $title);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_bind_result($prepared, $col_id);
+                            if (mysqli_stmt_fetch($prepared)) {
+                                mysqli_stmt_close($prepared);
+                                $game_id = $col_id;
+                                $delete = "DELETE FROM Game_Platform WHERE game_id = $game_id";
+                                $result = mysqli_query($connection, $delete);
+                                for ($i = 0; $i < count($platform); $i++) {
+                                    $insert = "INSERT INTO Game_Platform (game_id, platform_id) VALUES ($game_id, $platform[$i])";
+                                    $result = mysqli_query($connection, $insert);
+                                }
+                            }
+                        } 
+                    }
                 
                     // Update singleplayer
                     if (isset($_POST['singleplayer']) && is_numeric($_POST['singleplayer'])) {
