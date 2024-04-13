@@ -545,7 +545,86 @@
                         }
                     }
                 }
-            } 
+            } else if (isset($_POST['developer_update'])) {
+                    $name = $_POST['name'];
+                    $new_name = $_POST['new_name'];
+                    
+                    // Update developer name
+                    if (isset($_POST['new_name']) && !empty($_POST['new_name'])) {
+                        echo "<p>New name was inputted</p>";
+                        $new_name = $_POST['new_name'];
+                        $query = "SELECT name FROM Developer WHERE name = ?";
+                        if ($prepared = mysqli_prepare($connection, $query)) {
+                            mysqli_stmt_bind_param($prepared, "s", $name);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_bind_result($prepared, $col_id);
+                            if (mysqli_stmt_fetch($prepared)) {
+                                echo "<p>Developer is in database</p>";
+                                mysqli_stmt_close($prepared);
+                                $query = "SELECT name FROM Developer WHERE name = ?";
+                                if ($prepared = mysqli_prepare($connection, $query)) {
+                                    mysqli_stmt_bind_param($prepared, "s", $new_name);
+                                    mysqli_stmt_execute($prepared);
+                                    mysqli_stmt_bind_result($prepared, $col_title);
+                                    if (mysqli_stmt_fetch($prepared)) {
+                                        echo "<p>Developer in database already has the name $col_title</p>";
+                                    } else {
+                                        //mysqli_stmt_close($prepaered);
+                                        echo "<p>No developer has the name $col_title</p>";
+                                        $name_update = "UPDATE Developer SET name = ? WHERE name = ?";
+                                        if ($prepared = mysqli_prepare($connection, $name_update)) {
+                                            mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
+                                            mysqli_stmt_execute($prepared);
+                                        }
+                                        echo "<p>$name was set to $new_name</p>";
+                                    }
+                                }
+                            } else {
+                                echo "<p>Developer is not in database</p>";
+                            }
+                            mysqli_stmt_close($prepared);
+                        }
+                    }
+            } else if (isset($_POST['publisher_update'])) {
+                    $name = $_POST['name'];
+                    $new_name = $_POST['new_name'];
+                    
+                    // Update publisher name
+                    if (isset($_POST['new_name']) && !empty($_POST['new_name'])) {
+                        echo "<p>New name was inputted</p>";
+                        $new_name = $_POST['new_name'];
+                        $query = "SELECT name FROM Publisher WHERE name = ?";
+                        if ($prepared = mysqli_prepare($connection, $query)) {
+                            mysqli_stmt_bind_param($prepared, "s", $name);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_bind_result($prepared, $col_id);
+                            if (mysqli_stmt_fetch($prepared)) {
+                                echo "<p>Publisher is in database</p>";
+                                mysqli_stmt_close($prepared);
+                                $query = "SELECT name FROM Publisher WHERE name = ?";
+                                if ($prepared = mysqli_prepare($connection, $query)) {
+                                    mysqli_stmt_bind_param($prepared, "s", $new_name);
+                                    mysqli_stmt_execute($prepared);
+                                    mysqli_stmt_bind_result($prepared, $col_title);
+                                    if (mysqli_stmt_fetch($prepared)) {
+                                        echo "<p>Publisher in database already has the name $col_title</p>";
+                                    } else {
+                                        echo "<p>No publisher has the name $col_title</p>";
+                                        $name_update = "UPDATE Publisher SET name = ? WHERE name = ?";
+                                        if ($prepared = mysqli_prepare($connection, $name_update)) {
+                                            mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
+                                            mysqli_stmt_execute($prepared);
+                                        }
+                                        echo "<p>$name was set to $new_name</p>";
+                                    }
+                                }
+                            } else {
+                                echo "<p>Publisher is not in database</p>";
+                            }
+                            mysqli_stmt_close($prepared);
+                        }
+                    }
+            }
         }
     ?>
 
@@ -727,6 +806,47 @@
         </tr>
 		</table>
         </fieldset>
+    </form>
+
+    <!-- Developer Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Developer</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name" required><br></td>
+        </tr>
+        <tr>
+            <td><label>New Name</label></td>
+            <td><input type="text" name="new_name" required><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="developer_update" value="Update"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <!-- Publisher Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Publisher</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name" required><br></td>
+        </tr>
+        <tr>
+            <td><label>New Name</label></td>
+            <td><input type="text" name="new_name" required><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="publisher_update" value="Update"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
     </body>
 
 </html>
