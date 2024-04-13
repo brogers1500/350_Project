@@ -624,6 +624,88 @@
                             mysqli_stmt_close($prepared);
                         }
                     }
+            } else if (isset($_POST['platform_update'])) {
+                    $name = $_POST['name'];
+                    $new_name = $_POST['new_name'];
+                    
+                    // Update publisher name
+                    if (isset($_POST['new_name']) && !empty($_POST['new_name'])) {
+                        echo "<p>New name was inputted</p>";
+                        $new_name = $_POST['new_name'];
+                        $query = "SELECT name FROM Platform WHERE name = ?";
+                        if ($prepared = mysqli_prepare($connection, $query)) {
+                            mysqli_stmt_bind_param($prepared, "s", $name);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_bind_result($prepared, $col_id);
+                            if (mysqli_stmt_fetch($prepared)) {
+                                echo "<p>Platform is in database</p>";
+                                mysqli_stmt_close($prepared);
+                                $query = "SELECT name FROM Platform WHERE name = ?";
+                                if ($prepared = mysqli_prepare($connection, $query)) {
+                                    mysqli_stmt_bind_param($prepared, "s", $new_name);
+                                    mysqli_stmt_execute($prepared);
+                                    mysqli_stmt_bind_result($prepared, $col_title);
+                                    if (mysqli_stmt_fetch($prepared)) {
+                                        echo "<p>Platform in database already has the name $col_title</p>";
+                                    } else {
+                                        echo "<p>No platform has the name $col_title</p>";
+                                        $name_update = "UPDATE Platform SET name = ? WHERE name = ?";
+                                        if ($prepared = mysqli_prepare($connection, $name_update)) {
+                                            mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
+                                            mysqli_stmt_execute($prepared);
+                                        }
+                                        echo "<p>$name was set to $new_name</p>";
+                                    }
+                                }
+                            } else {
+                                echo "<p>Platform is not in database</p>";
+                            }
+                            mysqli_stmt_close($prepared);
+                        }
+                    }
+            } else if (isset($_POST['review_update'])) {
+                $game = $_POST['game'];
+                $reviewer = $_POST['reviewer'];
+                $new_review = $_POST['new_review'];
+                    
+                if (isset($_POST['new_review']) && !empty($_POST['new_review'])) {
+                    // Check if game is in database and get id
+                    $query = "SELECT id FROM Game WHERE title = ?";
+                    if ($prepared = mysqli_prepare($connection, $query)) {
+                        mysqli_stmt_bind_param($prepared, "s", $game);
+                        mysqli_stmt_execute($prepared);
+                        mysqli_stmt_bind_result($prepared, $col_id);
+                        if (mysqli_stmt_fetch($prepared)) {
+                            mysqli_stmt_close($prepared);
+                            $game = $col_id;
+                            echo "<p>Game ID = '$game'";
+                            echo "<p>New review was inputted</p>";
+                            $query = "SELECT id FROM Review WHERE game = ? AND reviewer = ?";
+                            if ($prepared = mysqli_prepare($connection, $query)) {
+                                mysqli_stmt_bind_param($prepared, "ss", $game, $reviewer);
+                                mysqli_stmt_execute($prepared);
+                                mysqli_stmt_bind_result($prepared, $col_id);
+                                if (mysqli_stmt_fetch($prepared)) {
+                                    echo "<p>Review for game from reviewer is in database</p>";
+                                    $review_id = $col_id;
+                                    echo "<p>Review ID = $review_id</p>";
+                                    mysqli_stmt_close($prepared);
+                                    $review_update = "UPDATE Review SET review = ? WHERE id = ?";
+                                    if ($prepared = mysqli_prepare($connection, $review_update)) {
+                                        mysqli_stmt_bind_param($prepared, "ss", $new_review, $review_id);
+                                        mysqli_stmt_execute($prepared);
+                                        echo "<p>New review was set</p>";
+                                    }
+                                } else {
+                                    echo "Review for game from reviewer is not in database</p>";
+                                }
+                            }
+                            mysqli_stmt_close($prepared);
+                        } else {
+                            echo "<p>Game is not in database</p>";
+                        }
+                    }
+                }
             }
         }
     ?>
@@ -808,6 +890,26 @@
         </fieldset>
     </form>
 
+    <!-- Platform Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Platform</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name" required><br></td>
+        </tr>
+        <tr>
+            <td><label>New Name</label></td>
+            <td><input type="text" name="new_name" required><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="platform_update" value="Update"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
     <!-- Developer Form -->
     <form action="edit.php" method="post">
         <fieldset>
@@ -847,6 +949,30 @@
         </table>
         </fieldset>
     </form>
+
+    <!-- Publisher Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Review</legend>
+        <table>
+        <tr>
+            <td><label>Game</label></td>
+            <td><input type="text" name="game" required><br></td>
+        </tr>
+        <tr>
+            <td><label>Reviewer</label></td>
+            <td><input type="text" name="reviewer" required><br></td>
+        </tr>
+        <tr>
+            <td><label>New Review</label></td>
+            <td><input type="text" name="new_review" required><br></td>
+        </tr>
+            <td><input type="submit" name="review_update" value="Update"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
     </body>
 
 </html>
