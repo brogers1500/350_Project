@@ -731,6 +731,62 @@
                         echo "<p>Game is not in database</p>";
                     }
                 }
+            } else if (isset($_POST['developer_delete'])) {
+                $name = $_POST['name'];
+                $developer_id;
+
+                $query = "SELECT id FROM Developer WHERE name = ?";
+                if ($prepared = mysqli_prepare($connection, $query)) {
+                    mysqli_stmt_bind_param($prepared, "s", $name);
+                    mysqli_stmt_execute($prepared);
+                    mysqli_stmt_bind_result($prepared, $col_id);
+                    if (mysqli_stmt_fetch($prepared)) {
+                        $developer_id = $col_id;
+                        echo "<p>Developer is in database</p>";
+                        echo "<p>Developer id = $developer_id</p>";
+                        mysqli_stmt_close($prepared);
+                        $query = "SELECT id FROM Game WHERE developer = $developer_id";
+                        $result = mysqli_query($connection, $query);
+                        $num_rows = mysqli_num_rows($result);
+                        if ($num_rows > 0) {
+                            echo "<p>Could not delete developer, a game is referencing it</p>";
+                        } else {
+                            $delete = "DELETE FROM Developer WHERE id = $developer_id";
+                            mysqli_query($connection, $delete);
+                            echo "<p>Developer deleted</p>";
+                        }
+                    } else {
+                        echo "<p>Developer is not in database</p>";
+                    }
+                }
+            } else if (isset($_POST['publisher_delete'])) {
+                $name = $_POST['name'];
+                $publisher_id;
+
+                $query = "SELECT id FROM Publisher WHERE name = ?";
+                if ($prepared = mysqli_prepare($connection, $query)) {
+                    mysqli_stmt_bind_param($prepared, "s", $name);
+                    mysqli_stmt_execute($prepared);
+                    mysqli_stmt_bind_result($prepared, $col_id);
+                    if (mysqli_stmt_fetch($prepared)) {
+                        $publisher_id = $col_id;
+                        echo "<p>Publisher is in database</p>";
+                        echo "<p>Publisher id = $publisher_id</p>";
+                        mysqli_stmt_close($prepared);
+                        $query = "SELECT id FROM Game WHERE publisher = $publisher_id";
+                        $result = mysqli_query($connection, $query);
+                        $num_rows = mysqli_num_rows($result);
+                        if ($num_rows > 0) {
+                            echo "<p>Could not delete publisher, a game is referencing it</p>";
+                        } else {
+                            $delete = "DELETE FROM Publisher WHERE id = $publisher_id";
+                            mysqli_query($connection, $delete);
+                            echo "<p>Publisher deleted</p>";
+                        }
+                    } else {
+                        echo "<p>Publisher is not in database</p>";
+                    }
+                }
             }
         }
     ?>
@@ -1017,7 +1073,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="developer" required><br></td>
+            <td><input type="text" name="name" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="developer_delete" value="Delete"></td>
@@ -1032,7 +1088,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="publisher" required><br></td>
+            <td><input type="text" name="name" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="publisher_delete" value="Delete"></td>
