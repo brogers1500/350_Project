@@ -706,14 +706,36 @@
                         }
                     }
                 }
+            } else if (isset($_POST['game_delete'])) {
+                $title = $_POST['title'];
+                $game_id;
+
+                $query = "SELECT id FROM Game WHERE title = ?";
+                if ($prepared = mysqli_prepare($connection, $query)) {
+                    mysqli_stmt_bind_param($prepared, "s", $title);
+                    mysqli_stmt_execute($prepared);
+                    mysqli_stmt_bind_result($prepared, $col_id);
+                    if (mysqli_stmt_fetch($prepared)) {
+                        $game_id = $col_id;
+                        echo "<p>Game is in database</p>";
+                        echo "<p>Game id = $game_id</p>";
+                        mysqli_stmt_close($prepared);
+                        $delete1 = "DELETE FROM Game_Genre WHERE game_id = $game_id";
+                        $delete2 = "DELETE FROM Game_Platform WHERE game_id = $game_id";
+                        $delete3 = "DELETE FROM Game WHERE id = $game_id";
+                        mysqli_query($connection, $delete1);
+                        mysqli_query($connection, $delete2);
+                        mysqli_query($connection, $delete3);
+                        echo "<p>Game deleted from database</p>";
+                    } else {
+                        echo "<p>Game is not in database</p>";
+                    }
+                }
             }
         }
     ?>
 
     <!-- Multiple forms used to insert or edit each table within database -->
-    <!-- Need to figure out how to know which form is being submitted to determine which SQL query to execute.
-    name for submit inputs could be used. If submit with name 'game_insert' is pressed, execute query to
-    INSERT into Game table. Will need to include Edit and maybe Delete submits later on -->
 	<h2>Edit</h2>
     <h3>Insert</h3> 
     <!-- Game Form -->
@@ -968,6 +990,71 @@
             <td><input type="text" name="new_review" required><br></td>
         </tr>
             <td><input type="submit" name="review_update" value="Update"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <h3>Delete</h3>
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Game</legend>
+        <table>
+        <tr>
+            <td><label>Title</label></td>
+            <td><input type="text" name="title" required><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="game_delete" value="Delete"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Developer</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="developer" required><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="developer_delete" value="Delete"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Publisher</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="publisher" required><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="publisher_delete" value="Delete"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Review</legend>
+        <table>
+        <tr>
+            <td><label>Game</label></td>
+            <td><input type="text" name="game" required><br></td>
+        </tr>
+        <tr>
+            <td><label>Reviewer</label></td>
+            <td><input type="text" name="reviewer" required><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="review_delete" value="Delete"></td>
         </tr>
         </table>
         </fieldset>
