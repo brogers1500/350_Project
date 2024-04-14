@@ -258,6 +258,33 @@
                         echo "<p>Error: Could not submit</p>";
                     }
                 }
+            } else if (isset($_POST['genre_insert'])) {
+                echo "<p>genre_insert set</p>";
+                $name;
+                if (isset($_POST['name'])) {
+                    $name = $_POST['name'];
+                    echo "$name";
+                    // Check if platform is already in database
+                    $query ="SELECT name FROM Genre WHERE name = ?";
+                    if ($prepared = mysqli_prepare($connection, $query)) {
+                        mysqli_stmt_bind_param($prepared, "s", $name);
+                        mysqli_stmt_execute($prepared);
+                        mysqli_stmt_bind_result($prepared, $col_name);
+                        if (mysqli_stmt_fetch($prepared)) {
+                            echo "<p>Genre already in database</p>";
+                        } else {
+                            // Insert genre into database
+                            $insert = "INSERT INTO Genre (name) VALUES (?)";
+                            if ($prepared = mysqli_prepare($connection, $insert)) {
+                                mysqli_stmt_bind_param($prepared, "s", $name);
+                                mysqli_stmt_execute($prepared);
+                            }
+                            echo "<p>Genre inserted into database</p>";
+                        }
+                    } else {
+                        echo "<p>Error: Could not submit</p>";
+                    }
+                }
             } else if (isset($_POST['review_insert'])) {
                 echo "<p>review_insert set</p>";
                 $review;
@@ -941,6 +968,22 @@
         </tr>
         <tr>
             <td><input type="submit" name="publisher_insert" value="Insert"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <!-- Genre Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Genre</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name"><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="genre_insert" value="Insert"></td>
         </tr>
         </table>
         </fieldset>
