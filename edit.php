@@ -690,6 +690,45 @@
                             mysqli_stmt_close($prepared);
                         }
                     }
+            } else if (isset($_POST['genre_update'])) {
+                    $name = $_POST['name'];
+                    $new_name = $_POST['new_name'];
+                    
+                    // Update genre name
+                    if (isset($_POST['new_name']) && !empty($_POST['new_name'])) {
+                        echo "<p>New name was inputted</p>";
+                        $new_name = $_POST['new_name'];
+                        $query = "SELECT name FROM Genre WHERE name = ?";
+                        if ($prepared = mysqli_prepare($connection, $query)) {
+                            mysqli_stmt_bind_param($prepared, "s", $name);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_bind_result($prepared, $col_id);
+                            if (mysqli_stmt_fetch($prepared)) {
+                                echo "<p>Platform is in database</p>";
+                                mysqli_stmt_close($prepared);
+                                $query = "SELECT name FROM Genre WHERE name = ?";
+                                if ($prepared = mysqli_prepare($connection, $query)) {
+                                    mysqli_stmt_bind_param($prepared, "s", $new_name);
+                                    mysqli_stmt_execute($prepared);
+                                    mysqli_stmt_bind_result($prepared, $col_title);
+                                    if (mysqli_stmt_fetch($prepared)) {
+                                        echo "<p>Genre in database already has the name $col_title</p>";
+                                    } else {
+                                        echo "<p>No genre has the name $col_title</p>";
+                                        $name_update = "UPDATE Genre SET name = ? WHERE name = ?";
+                                        if ($prepared = mysqli_prepare($connection, $name_update)) {
+                                            mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
+                                            mysqli_stmt_execute($prepared);
+                                        }
+                                        echo "<p>$name was set to $new_name</p>";
+                                    }
+                                }
+                            } else {
+                                echo "<p>Genre is not in database</p>";
+                            }
+                            mysqli_stmt_close($prepared);
+                        }
+                    }
             } else if (isset($_POST['review_update'])) {
                 $game = $_POST['game'];
                 $reviewer = $_POST['reviewer'];
@@ -1087,6 +1126,7 @@
         </fieldset>
     </form>
 
+
     <!-- Developer Form -->
     <form action="edit.php" method="post">
         <fieldset>
@@ -1127,7 +1167,27 @@
         </fieldset>
     </form>
 
-    <!-- Publisher Form -->
+    <!-- Genre Form -->
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Genre</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name" required><br></td>
+        </tr>
+        <tr>
+            <td><label>New Name</label></td>
+            <td><input type="text" name="new_name" required><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="genre_update" value="Update"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <!-- Review Form -->
     <form action="edit.php" method="post">
         <fieldset>
         <legend>Review</legend>
