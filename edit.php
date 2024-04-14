@@ -909,6 +909,43 @@
                         echo "<p>Genre is not in database</p>";
                     }
                 }
+            } else if (isset($_POST['review_delete'])) {
+                $game = $_POST['game'];
+                $reviewer = $_POST['reviewer'];
+                $game_id;
+                $review_id;
+
+                $query = "SELECT id FROM Game WHERE title = ?";
+                if ($prepared = mysqli_prepare($connection, $query)) {
+                    mysqli_stmt_bind_param($prepared, "s", $game);
+                    mysqli_stmt_execute($prepared);
+                    mysqli_stmt_bind_result($prepared, $col_id);
+                    if (mysqli_stmt_fetch($prepared)) {
+                        $game_id = $col_id;
+                        echo "<p>Game is in database</p>";
+                        echo "<p>Game id = $game_id</p>";
+                        mysqli_stmt_close($prepared);
+                        $query = "SELECT id FROM Review WHERE game = ? AND reviewer = ?";
+                        if ($prepared = mysqli_prepare($connection, $query)) {
+                            mysqli_stmt_bind_param($prepared, "is", $game_id, $reviewer);
+                            mysqli_stmt_execute($prepared);
+                            mysqli_stmt_bind_result($prepared, $col_id);
+                            if (mysqli_stmt_fetch($prepared)) {
+                                $review_id = $col_id;
+                                echo "<p>Review is in database</p>";
+                                echo "<p>Review id = $review_id</p>";
+                                mysqli_stmt_close($prepared);
+                                $delete = "DELETE FROM Review WHERE id = $review_id";
+                                mysqli_query($connection, $delete);
+                                echo "<p>Review deleted</p>";
+                            } else {
+                                echo "<p>Review for game from reviewer not in database</p>";
+                            }
+                        }
+                    } else {
+                        echo "<p>Game is not in database</p>";
+                    }
+                }
             }
         }
     ?>
