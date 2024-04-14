@@ -731,6 +731,34 @@
                         echo "<p>Game is not in database</p>";
                     }
                 }
+            } else if (isset($_POST['platform_delete'])) {
+                $name = $_POST['name'];
+                $platform_id;
+
+                $query = "SELECT id FROM Platform WHERE name = ?";
+                if ($prepared = mysqli_prepare($connection, $query)) {
+                    mysqli_stmt_bind_param($prepared, "s", $name);
+                    mysqli_stmt_execute($prepared);
+                    mysqli_stmt_bind_result($prepared, $col_id);
+                    if (mysqli_stmt_fetch($prepared)) {
+                        $platform_id = $col_id;
+                        echo "<p>Platform is in database</p>";
+                        echo "<p>Platform id = $platform_id</p>";
+                        mysqli_stmt_close($prepared);
+                        $query = "SELECT platform_id FROM Game_Platform WHERE platform_id = $platform_id";
+                        $result = mysqli_query($connection, $query);
+                        $num_rows = mysqli_num_rows($result);
+                        if ($num_rows > 0) {
+                            echo "<p>Could not delete platform, a game is referencing it</p>";
+                        } else {
+                            $delete = "DELETE FROM Platform WHERE id = $platform_id";
+                            mysqli_query($connection, $delete);
+                            echo "<p>Platform deleted</p>";
+                        }
+                    } else {
+                        echo "<p>Platform is not in database</p>";
+                    }
+                }
             } else if (isset($_POST['developer_delete'])) {
                 $name = $_POST['name'];
                 $developer_id;
@@ -785,6 +813,34 @@
                         }
                     } else {
                         echo "<p>Publisher is not in database</p>";
+                    }
+                }
+            } else if (isset($_POST['genre_delete'])) {
+                $name = $_POST['name'];
+                $genre_id;
+
+                $query = "SELECT id FROM Genre WHERE name = ?";
+                if ($prepared = mysqli_prepare($connection, $query)) {
+                    mysqli_stmt_bind_param($prepared, "s", $name);
+                    mysqli_stmt_execute($prepared);
+                    mysqli_stmt_bind_result($prepared, $col_id);
+                    if (mysqli_stmt_fetch($prepared)) {
+                        $genre_id = $col_id;
+                        echo "<p>Genre is in database</p>";
+                        echo "<p>Genre id = $genre_id</p>";
+                        mysqli_stmt_close($prepared);
+                        $query = "SELECT genre_id FROM Game_Genre WHERE genre_id = $genre_id";
+                        $result = mysqli_query($connection, $query);
+                        $num_rows = mysqli_num_rows($result);
+                        if ($num_rows > 0) {
+                            echo "<p>Could not delete genre, a game is referencing it</p>";
+                        } else {
+                            $delete = "DELETE FROM Genre WHERE id = $genre_id";
+                            mysqli_query($connection, $delete);
+                            echo "<p>Genre deleted</p>";
+                        }
+                    } else {
+                        echo "<p>Genre is not in database</p>";
                     }
                 }
             }
@@ -1069,6 +1125,21 @@
 
     <form action="edit.php" method="post">
         <fieldset>
+        <legend>Platform</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name" required><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="platform_delete" value="Delete"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form>
+
+    <form action="edit.php" method="post">
+        <fieldset>
         <legend>Developer</legend>
         <table>
         <tr>
@@ -1092,6 +1163,21 @@
         </tr>
         <tr>
             <td><input type="submit" name="publisher_delete" value="Delete"></td>
+        </tr>
+        </table>
+        </fieldset>
+    </form> 
+
+    <form action="edit.php" method="post">
+        <fieldset>
+        <legend>Genre</legend>
+        <table>
+        <tr>
+            <td><label>Name</label></td>
+            <td><input type="text" name="name" required><br></td>
+        </tr>
+        <tr>
+            <td><input type="submit" name="genre_delete" value="Delete"></td>
         </tr>
         </table>
         </fieldset>
