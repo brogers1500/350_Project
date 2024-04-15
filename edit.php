@@ -956,7 +956,7 @@
     <h3>Insert</h3> 
     <!-- Game Form -->
 	<form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Game</legend>
 	    <table>
 		<tr>
@@ -1004,7 +1004,7 @@
 
     <!-- Platform Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Platform</legend>
         <table>
         <tr>
