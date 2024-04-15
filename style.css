@@ -2,6 +2,14 @@
     text-align: center;
 }
 
+p {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
 body {
     background-color: #232323;
 }
