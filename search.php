@@ -88,6 +88,59 @@
         }
         ?>
         </table>
+    <h2>Reviews</h2>
+     <form action="" method="post">
+ <table>  <td><label>Game</label></td>
+ <td colspan="8"><input type="text" name="game" size="117"><br></td>
+  </form>
+</tr>
+</table>
+</form>
+<table>
+<tr><th class="sth">Game</th><th class="sth">Reviewer</th><th class="sth">Review</th></tr>
+    <?php
+        $sql_select = "SELECT Game.title, Review.reviewer, Review.review FROM Game INNER JOIN Review ON Review.game = Game.id";
+         if ($_SERVER["REQUEST_METHOD"] == "POST"){
+         if (!empty($_POST['game'])){
+            $sql_select= $sql_select . " WHERE Game.title LIKE ?";
+        if($prepared = mysqli_prepare($connection, $sql_select)){
+             mysqli_stmt_bind_param($prepared, "s", $game);
+             mysqli_stmt_execute($prepared);
+             mysqli_stmt_bind_result($prepared, $gameRow, $reviewerRow, $reviewRow);
+            echo "HERE";
+            while(mysqli_stmt_fetch($prepared)){
+            echo "<tr><td>". $gameRow . "</td><td>" .$reviewerRow . "</td><td>" .$reviewRow . "</td></tr>";
+            }
+        }
+      }
+      }    
+         else{
+             if($prepared = mysqli_prepare($connection, $sql_select)){
+                mysqli_stmt_execute($prepared);
+                mysqli_stmt_bind_result($prepared, $gameRow, $reviewerRow, $reviewRow);
+                while(mysqli_stmt_fetch($prepared)){
+                echo "<tr><td>". $gameRow . "</td><td>" .$reviewerRow . "</td><td>" .$reviewRow . "</td></tr>";
+
+                }
+            }
+        }
+    
+    
+      //  else{
+      // $results = mysqli_query($connection, $sql_select);
+        // echo mysqli_num_rows($results);
+        // if (mysqli_num_rows($results)==0){
+          //  echo "<p>There are no results :(";
+        // }}
+        // if (mysqli_num_rows($results) > 0) {
+          //  while ($row = mysqli_fetch_assoc($results)) {
+            //    echo "<tr><td>" . $row['title'] . "</td><td> " . $row['reviewer'    ] . "</td><td>" . $row['review'] . "</td></tr>";
+        
+        
+       // }
+       // }
+    ?>
+</table>
     </body>
 
 </html>
