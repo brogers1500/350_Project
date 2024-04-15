@@ -60,9 +60,15 @@
 	    </table>
 	</form>
         <table>
-        <tr><th class="sth">Title</th><th class="sth">Is Multiplayer?</th><th class="sth">Is Singleplayer?</th><th class="sth">Developer</th><th class="sth">Publisher</th><th class="sth">Platform</th><th class="sth">Genre</th><th class="sth">ESRB Rating</th><th class="sth">Release Date</th></tr>
+        <tr><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Game.title">Title</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Game.is_multiplayer">Is Multiplayer?</a></th><th class="sth"><a href=https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Game.is_singleplayer>Is Singleplayer?</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Developer.name">Developer</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Publisher.name">Publisher</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Platform.name">Platform</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Genre.name">Genre</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Game.rating">ESRB Rating</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Game.release_date">Release Date</a></th></tr>
         <?php
-            $select_all= "SELECT Game.title, Game.is_singleplayer, Game.is_multiplayer, Game.rating, Game.release_date, Genre.name, Platform.name, Developer.name, Publisher.name FROM Game_Genre INNER JOIN Game ON Game.id = Game_Genre.game_id INNER JOIN Genre ON Game_Genre.genre_id = Genre.id INNER JOIN Game_Platform ON Game_Platform.game_id = Game.id INNER JOIN Platform ON Platform.id = Game_Platform.platform_id INNER JOIN Publisher ON Game.publisher = Publisher.id INNER JOIN Developer ON Developer.id = Game.developer";
+            if (!empty($_GET['sort'])){
+                $sortBy= " ORDER BY " .$_GET['sort'];
+            }
+            else{
+                $sortBy="";
+            }
+            $select_all= "SELECT Game.title, Game.is_singleplayer, Game.is_multiplayer, Game.rating, Game.release_date, Genre.name, Platform.name, Developer.name, Publisher.name FROM Game_Genre INNER JOIN Game ON Game.id = Game_Genre.game_id INNER JOIN Genre ON Game_Genre.genre_id = Genre.id INNER JOIN Game_Platform ON Game_Platform.game_id = Game.id INNER JOIN Platform ON Platform.id = Game_Platform.platform_id INNER JOIN Publisher ON Game.publisher = Publisher.id INNER JOIN Developer ON Developer.id = Game.developer".$sortBy;
             if (empty($title)){
             $sql_select = $select_all;
         }
