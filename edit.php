@@ -1020,7 +1020,7 @@
 
     <!-- Developer Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Developer</legend>
         <table>
         <tr>
@@ -1036,7 +1036,7 @@
 
     <!-- Publisher Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Publisher</legend>
         <table>
         <tr>
@@ -1052,7 +1052,7 @@
 
     <!-- Genre Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Genre</legend>
         <table>
         <tr>
@@ -1068,7 +1068,7 @@
 
     <!-- Review Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Review</legend>
         <table>
         <tr>
@@ -1092,7 +1092,7 @@
 
     <h3>Update</h3>
 	<form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Game</legend>
 	    <table>
 		<tr>
@@ -1146,7 +1146,7 @@
 
     <!-- Platform Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Platform</legend>
         <table>
         <tr>
@@ -1167,7 +1167,7 @@
 
     <!-- Developer Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Developer</legend>
         <table>
         <tr>
@@ -1187,7 +1187,7 @@
 
     <!-- Publisher Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Publisher</legend>
         <table>
         <tr>
@@ -1207,7 +1207,7 @@
 
     <!-- Genre Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Genre</legend>
         <table>
         <tr>
@@ -1227,7 +1227,7 @@
 
     <!-- Review Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Review</legend>
         <table>
         <tr>
@@ -1250,7 +1250,7 @@
 
     <h3>Delete</h3>
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Game</legend>
         <table>
         <tr>
@@ -1265,7 +1265,7 @@
     </form>
 
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Platform</legend>
         <table>
         <tr>
@@ -1280,7 +1280,7 @@
     </form>
 
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Developer</legend>
         <table>
         <tr>
@@ -1295,7 +1295,7 @@
     </form>
 
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Publisher</legend>
         <table>
         <tr>
@@ -1310,7 +1310,7 @@
     </form> 
 
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Genre</legend>
         <table>
         <tr>
@@ -1325,7 +1325,7 @@
     </form>
 
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Review</legend>
         <table>
         <tr>
