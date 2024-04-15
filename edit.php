@@ -34,8 +34,16 @@
                 echo "<p>game_insert set</p>";
                 $title = $_POST['title'];
                 $release = $_POST['release'];
-                $singleplayer = $_POST['singleplayer'];
-                $multiplayer = $_POST['multiplayer'];
+                if (isset($_POST['singleplayer'])) {
+                    $singleplayer = 1;
+                } else {
+                    $singleplayer = 0;
+                }
+                if (isset($_POST['multiplayer'])) {
+                    $multiplayer = 1;
+                } else {
+                    $multiplayer = 0;
+                }
                 $rating = $_POST['rating'];
                 $developer = $_POST['developer'];
                 $publisher = $_POST['publisher'];
@@ -83,7 +91,7 @@
                 }
                 echo "<p>pub id = '$publisher'</p>";
                 // Check if genre is in database
-                $genre = preg_split('/[\s,]+/', $genre);
+                $genre = preg_split('/,+\s*/', $genre);
                 for ($i = 0; $i < count($genre); $i++) {
                     echo "<p>$genre[$i]</p>";
                     $query = "SELECT id FROM Genre WHERE name = ?";
@@ -103,7 +111,7 @@
                     }
                 }
                 // Check if platform is in database
-                $platform = preg_split('/[\s,]+/', $platform);
+                $platform = preg_split('/,+\s*/', $platform);
                 for ($i = 0; $i < count($platform); $i++) {
                     echo "<p>$platform[$i]</p>";
                     $query = "SELECT id FROM Platform WHERE name = ?";
@@ -114,7 +122,7 @@
                         if (mysqli_stmt_fetch($prepared)) {
                             $platform[$i] = $col_id;
                         } else {
-                            echo "<p>Platform '$platform[i]' is not in database</p>";
+                            echo "<p>Platform '$platform[$i]' is not in database</p>";
                             $platform = NULL;
                             break;
                         }
