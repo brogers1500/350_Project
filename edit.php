@@ -951,6 +951,79 @@
         }
     ?>
 
+    <datalist id="games">
+        <?php
+            $query = "SELECT title FROM Game ORDER BY title";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $title = $row["title"];
+                echo "<option value='$title'>$title</option>";
+            }
+        ?>
+    </datalist>
+    <datalist id="developers">
+        <?php
+            $query = "SELECT name FROM Developer ORDER BY name";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $name = $row["name"];
+                echo "<option value='$name'>$name</option>";
+            }
+        ?>
+    </datalist>
+    <datalist id="publishers">
+        <?php
+            $query = "SELECT name FROM Publisher ORDER BY name";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $name = $row["name"];
+                echo "<option value='$name'>$name</option>";
+            }
+        ?>
+    </datalist>
+    <datalist id="platforms">
+        <?php
+            $query = "SELECT name FROM Platform ORDER BY name";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $name = $row["name"];
+                echo "<option value='$name'>$name</option>";
+            }
+        ?>
+    </datalist>
+    <datalist id="genres">
+        <?php
+            $query = "SELECT name FROM Genre ORDER BY name";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $name = $row["name"];
+                echo "<option value='$name'>$name</option>";
+            }
+        ?>
+    </datalist>
+    <datalist id="reviewers">
+        <?php
+            $query = "SELECT DISTINCT reviewer FROM Review ORDER BY reviewer";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $reviewer = $row["reviewer"];
+                echo "<option value='$reviewer'>$reviewer</option>";
+            }
+        ?>
+    </datalist>
+
     <!-- Multiple forms used to insert or edit each table within database -->
 	<h2>Edit</h2>
     <h3>Insert</h3> 
@@ -961,15 +1034,15 @@
 	    <table>
 		<tr>
 	        <td><label>Title</label></td>
-		    <td><input type="text" name="title" required><br></td>
+		    <td><input type="text" name="title" list="games" autocomplete="off" required><br></td>
 		</tr>
 		<tr>
 		    <td><label>Developer</label></td>
-		    <td><input type="text" name="developer" required><br></td>
+		    <td><input type="text" name="developer" list="developers" autocomplete="off" required><br></td>
 		</tr>
 		<tr>
 		    <td><label>Publisher</label></td>
-		    <td><input type="text" name="publisher" required><br></td>
+		    <td><input type="text" name="publisher" list="publishers" autocomplete="off" required><br></td>
 		</tr>
 		<tr>
 	        <td><label>Rating</label></td>
@@ -1009,7 +1082,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name"><br></td>
+            <td><input type="text" name="name" list="platforms" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="platform_insert" value="Insert"></td>
@@ -1025,7 +1098,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name"><br></td>
+            <td><input type="text" name="name" list="developers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="developer_insert" value="Insert"></td>
@@ -1041,7 +1114,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name"><br></td>
+            <td><input type="text" name="name" list="developers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="publisher_insert" value="Insert"></td>
@@ -1057,7 +1130,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name"><br></td>
+            <td><input type="text" name="name" list="genres" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="genre_insert" value="Insert"></td>
@@ -1073,15 +1146,15 @@
         <table>
         <tr>
             <td><label>Game</label></td>
-            <td><input type="text" name="game"><br></td>
+            <td><input type="text" name="game" list="games" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>Reviewer</label></td>
-            <td><input type="text" name="reviewer"><br></td>
+            <td><input type="text" name="reviewer" list="reviewers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>Review</label></td>
-            <td><input type="text" name="review"><br></td>
+            <td><input type="text" name="review" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="review_insert" value="Insert"></td>
@@ -1097,7 +1170,7 @@
 	    <table>
 		<tr>
 	        <td><label>Title</label></td>
-		    <td><input type="text" name="title" required><br></td>
+		    <td><input type="text" name="title" list="games" autocomplete="off" required><br></td>
 		</tr>
 		<tr>
 	        <td><label>New Title</label></td>
@@ -1151,7 +1224,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="platforms" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>New Name</label></td>
@@ -1172,7 +1245,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="developers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>New Name</label></td>
@@ -1192,7 +1265,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="publishers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>New Name</label></td>
@@ -1212,7 +1285,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="genres" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>New Name</label></td>
@@ -1232,11 +1305,11 @@
         <table>
         <tr>
             <td><label>Game</label></td>
-            <td><input type="text" name="game" required><br></td>
+            <td><input type="text" name="game" list="games" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>Reviewer</label></td>
-            <td><input type="text" name="reviewer" required><br></td>
+            <td><input type="text" name="reviewer" list="reviewers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>New Review</label></td>
@@ -1255,7 +1328,7 @@
         <table>
         <tr>
             <td><label>Title</label></td>
-            <td><input type="text" name="title" required><br></td>
+            <td><input type="text" name="title" list="games" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="game_delete" value="Delete"></td>
@@ -1270,7 +1343,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="platforms" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="platform_delete" value="Delete"></td>
@@ -1285,7 +1358,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="developers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="developer_delete" value="Delete"></td>
@@ -1300,7 +1373,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="publishers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="publisher_delete" value="Delete"></td>
@@ -1315,7 +1388,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="genres" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="genre_delete" value="Delete"></td>
@@ -1330,11 +1403,11 @@
         <table>
         <tr>
             <td><label>Game</label></td>
-            <td><input type="text" name="game" required><br></td>
+            <td><input type="text" name="game" list="games" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>Reviewer</label></td>
-            <td><input type="text" name="reviewer" required><br></td>
+            <td><input type="text" name="reviewer" list="reviewers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="review_delete" value="Delete"></td>
