@@ -959,7 +959,7 @@
             for ($i = 0; $i < $num_rows; $i++) {
                 $row = mysqli_fetch_assoc($result);
                 $title = $row["title"];
-                echo "<option value='$title'>$title</option>";
+                echo "<option value=\"$title\">$title</option>";
             }
         ?>
     </datalist>
@@ -1045,16 +1045,21 @@
 		    <td><input type="text" name="publisher" list="publishers" autocomplete="off" required><br></td>
 		</tr>
 		<tr>
-	        <td><label>Rating</label></td>
-	        <td><input type="text" name="rating" required><br></td>
-		</tr>
-		<tr>
 	        <td><label>Platforms</label></td>
 	        <td><input type="text" name="platform" required><br></td>
 		</tr>
 		<tr>
 	        <td><label>Genres</label></td>
 	        <td><input type="text" name="genre" required><br></td>
+		</tr>
+		<tr>
+	        <td><label>Rating</label></td>
+            <td><select name="rating" required>
+                <option value="E">E</option>
+                <option value="E10">E10</option>
+                <option value="T">T</option>
+                <option value="M">M</option>
+            </select></td>
 		</tr>
 	    <tr>
 		    <td><label>Release Date</label></td>
@@ -1178,15 +1183,11 @@
 		</tr>
 		<tr>
 		    <td><label>Developer</label></td>
-		    <td><input type="text" name="developer"><br></td>
+		    <td><input type="text" name="developer" list="developers"><br></td>
 		</tr>
 		<tr>
 		    <td><label>Publisher</label></td>
-		    <td><input type="text" name="publisher"><br></td>
-		</tr>
-		<tr>
-	        <td><label>Rating</label></td>
-	        <td><input type="text" name="rating"><br></td>
+		    <td><input type="text" name="publisher" list="publishers"><br></td>
 		</tr>
 		<tr>
 	        <td><label>Platforms</label></td>
@@ -1195,6 +1196,16 @@
 		<tr>
 	        <td><label>Genres</label></td>
 	        <td><input type="text" name="genre"><br></td>
+		</tr>
+		<tr>
+	        <td><label>Rating</label></td>
+            <td><select name="rating">
+                <option value=""></option>
+                <option value="E">E</option>
+                <option value="E10">E10</option>
+                <option value="T">T</option>
+                <option value="M">M</option>
+            </select></td>
 		</tr>
 	    <tr>
 		    <td><label>Release Date</label></td>
