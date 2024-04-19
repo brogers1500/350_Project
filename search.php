@@ -102,6 +102,8 @@
         $sql_select = "SELECT Game.title, Review.reviewer, Review.review FROM Game INNER JOIN Review ON Review.game = Game.id";
          if ($_SERVER["REQUEST_METHOD"] == "POST"){
          if (!empty($_POST['game'])){
+            // Add % symbols to both sides of the game title
+            $game = '%'.$_POST['game'].'%';
             $sql_select= $sql_select . " WHERE Game.title LIKE ?";
         if($prepared = mysqli_prepare($connection, $sql_select)){
              mysqli_stmt_bind_param($prepared, "s", $game);
