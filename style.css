@@ -2,6 +2,21 @@
     text-align: center;
 }
 
+.red {
+    color: red;
+}
+
+.green {
+    color: green;
+}
+
+.black_bg {
+    background-color: black;
+}
+legend {
+    color: #FFFFFF;
+}
+
 body {
     background-color: #232323;
 }
@@ -11,6 +26,9 @@ h1 {
 }
 h2 {
     font: 1.5rem "Georgia", serif;
+    color: #FFFFFF;
+}
+h3 {
     color: #FFFFFF;
 }
 nav { 

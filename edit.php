@@ -24,7 +24,7 @@
         if (mysqli_connect_errno()) {
             echo "<p>Failed to connect to the server</p>";
         } else {
-            echo "<p>Connected to the server</p>";
+            echo "<p class=\"green\">Connected to the server</p></p>";
         }
 
 
@@ -34,8 +34,16 @@
                 echo "<p>game_insert set</p>";
                 $title = $_POST['title'];
                 $release = $_POST['release'];
-                $singleplayer = $_POST['singleplayer'];
-                $multiplayer = $_POST['multiplayer'];
+                if (isset($_POST['singleplayer'])) {
+                    $singleplayer = 1;
+                } else {
+                    $singleplayer = 0;
+                }
+                if (isset($_POST['multiplayer'])) {
+                    $multiplayer = 1;
+                } else {
+                    $multiplayer = 0;
+                }
                 $rating = $_POST['rating'];
                 $developer = $_POST['developer'];
                 $publisher = $_POST['publisher'];
@@ -50,7 +58,7 @@
                     mysqli_stmt_bind_result($prepared, $col_id);
                     if (mysqli_stmt_fetch($prepared)) {
                         $title = NULL;
-                        echo "<p>Game is already in database</p>";
+                        echo "<p class=\"red\">Game is already in database</p>";
                     }
                     mysqli_stmt_close($prepared);
                 }
@@ -64,6 +72,7 @@
                         $developer = $col_id;
                     } else {
                         $developer = NULL;
+                        echo "<p class=\"red\">Developer is not in database</p>";
                     }
                     mysqli_stmt_close($prepared);
                 }
@@ -78,12 +87,13 @@
                         $publisher = $col_id;
                     } else {
                         $publisher = NULL;
+                        echo "<p class=\"red\">Publisher is not in database</p>";
                     }
                     mysqli_stmt_close($prepared);
                 }
                 echo "<p>pub id = '$publisher'</p>";
                 // Check if genre is in database
-                $genre = preg_split('/[\s,]+/', $genre);
+                $genre = preg_split('/,+\s*/', $genre);
                 for ($i = 0; $i < count($genre); $i++) {
                     echo "<p>$genre[$i]</p>";
                     $query = "SELECT id FROM Genre WHERE name = ?";
@@ -95,7 +105,7 @@
                             echo "<p>$col_id</p>";
                             $genre[$i] = $col_id;
                         } else {
-                            echo "<p>Genre '$genre[$i]' is not in database</p>";
+                            echo "<p class=\"red\">Genre '$genre[$i]' is not in database</p>";
                             $genre = NULL;
                             break;
                         }
@@ -103,7 +113,7 @@
                     }
                 }
                 // Check if platform is in database
-                $platform = preg_split('/[\s,]+/', $platform);
+                $platform = preg_split('/,+\s*/', $platform);
                 for ($i = 0; $i < count($platform); $i++) {
                     echo "<p>$platform[$i]</p>";
                     $query = "SELECT id FROM Platform WHERE name = ?";
@@ -114,7 +124,7 @@
                         if (mysqli_stmt_fetch($prepared)) {
                             $platform[$i] = $col_id;
                         } else {
-                            echo "<p>Platform '$platform[i]' is not in database</p>";
+                            echo "<p class=\"red\">Platform '$platform[$i]' is not in database</p>";
                             $platform = NULL;
                             break;
                         }
@@ -173,9 +183,9 @@
                             mysqli_stmt_close($prepared);
                         }
                     }
-                    echo "<p>Game inserted into database</p>";
+                    echo "<p class=\"green\">Game inserted into database</p>";
                 } else {
-                    echo "<p>Game could not be inserted into database</p>";
+                    echo "<p class=\"red\">Game could not be inserted into database</p>";
                 }
             } else if (isset($_POST['platform_insert'])) {
                 echo "<p>platform_insert set</p>";
@@ -190,7 +200,7 @@
                         mysqli_stmt_execute($prepared);
                         mysqli_stmt_bind_result($prepared, $col_name);
                         if (mysqli_stmt_fetch($prepared)) {
-                            echo "<p>Platform already in database</p>";
+                            echo "<p class \"red\">Platform already in database</p>";
                         } else {
                             // Insert platform into database
                             $insert = "INSERT INTO Platform (name) VALUES (?)";
@@ -198,10 +208,8 @@
                                 mysqli_stmt_bind_param($prepared, "s", $name);
                                 mysqli_stmt_execute($prepared);
                             }
-                            echo "<p>Platform inserted into database</p>";
+                            echo "<p class=\"geen\">Platform inserted into database</p>";
                         }
-                    } else {
-                        echo "<p>Error: Could not submit</p>";
                     }
                 }
             } else if (isset($_POST['developer_insert'])) {
@@ -217,7 +225,7 @@
                         mysqli_stmt_execute($prepared);
                         mysqli_stmt_bind_result($prepared, $col_name);
                         if (mysqli_stmt_fetch($prepared)) {
-                            echo "<p>Developer already in database</p>";
+                            echo "<p class=\"red\">Developer already in database</p>";
                         } else {
                             // Insert developer into database
                             $insert = "INSERT INTO Developer (name) VALUES (?)";
@@ -225,10 +233,8 @@
                                 mysqli_stmt_bind_param($prepared, "s", $name);
                                 mysqli_stmt_execute($prepared);
                             }
-                            echo "<p>Developer inserted into database</p>";
+                            echo "<p class=\"green\">Developer inserted into database</p>";
                         }
-                    } else {
-                        echo "<p>Error: Could not submit</p>";
                     }
                 }
             } else if (isset($_POST['publisher_insert'])) {
@@ -244,7 +250,7 @@
                         mysqli_stmt_execute($prepared);
                         mysqli_stmt_bind_result($prepared, $col_name);
                         if (mysqli_stmt_fetch($prepared)) {
-                            echo "<p>Publisher already in database</p>";
+                            echo "<p class=\"red\">Publisher already in database</p>";
                         } else {
                             // Insert publisher into database
                             $insert = "INSERT INTO Publisher (name) VALUES (?)";
@@ -252,10 +258,8 @@
                                 mysqli_stmt_bind_param($prepared, "s", $name);
                                 mysqli_stmt_execute($prepared);
                             }
-                            echo "<p>Publisher inserted into database</p>";
+                            echo "<p class=\"green\">Publisher inserted into database</p>";
                         }
-                    } else {
-                        echo "<p>Error: Could not submit</p>";
                     }
                 }
             } else if (isset($_POST['genre_insert'])) {
@@ -271,7 +275,7 @@
                         mysqli_stmt_execute($prepared);
                         mysqli_stmt_bind_result($prepared, $col_name);
                         if (mysqli_stmt_fetch($prepared)) {
-                            echo "<p>Genre already in database</p>";
+                            echo "<p class=\"red\">Genre already in database</p>";
                         } else {
                             // Insert genre into database
                             $insert = "INSERT INTO Genre (name) VALUES (?)";
@@ -279,10 +283,8 @@
                                 mysqli_stmt_bind_param($prepared, "s", $name);
                                 mysqli_stmt_execute($prepared);
                             }
-                            echo "<p>Genre inserted into database</p>";
+                            echo "<p class=\"green\">Genre inserted into database</p>";
                         }
-                    } else {
-                        echo "<p>Error: Could not submit</p>";
                     }
                 }
             } else if (isset($_POST['review_insert'])) {
@@ -312,7 +314,7 @@
                                 mysqli_stmt_execute($prepared);
                                 mysqli_stmt_bind_result($prepared, $col_review, $col_reviewer);
                                 if (mysqli_stmt_fetch($prepared)) {
-                                    echo "<p>Review from reviewer for game already in database</p>";
+                                    echo "<p class=\"red\">Review from reviewer for game already in database</p>";
                                 } else {
                                     // Insert review into database
                                     mysqli_stmt_close($prepared);
@@ -320,12 +322,12 @@
                                     if ($prepared = mysqli_prepare($connection, $insert)) {
                                         mysqli_stmt_bind_param($prepared, "ssi", $reviewer, $review, $game);
                                         mysqli_stmt_execute($prepared);
-                                        echo "<p>Review inserted in database</p>";
+                                        echo "<p class=\"green\">Review inserted in database</p>";
                                     }
                                 }
                             }
                         } else {
-                            echo "<p>Game not in database</p>";
+                            echo "<p class=\"red\">Game not in database</p>";
                         }
                     }
                 }
@@ -358,10 +360,10 @@
                                 if ($prepared = mysqli_prepare($connection, $developer_update)) {
                                     mysqli_stmt_bind_param($prepared, "is", $developer, $title);
                                     mysqli_stmt_execute($prepared);
-                                    echo "<p>New developer was set</p>";
+                                    echo "<p class=\"green\">New developer was set</p>";
                                 }
                             } else {
-                                echo "<p>New developer is not in database</p>";
+                                echo "<p class=\"red\">New developer is not in database</p>";
                             }
                             mysqli_stmt_close($prepared);
                         }
@@ -385,10 +387,10 @@
                                 if ($prepared = mysqli_prepare($connection, $publisher_update)) {
                                     mysqli_stmt_bind_param($prepared, "is", $publisher, $title);
                                     mysqli_stmt_execute($prepared);
-                                    echo "<p>New publisher was set</p>";
+                                    echo "<p class=\"green\">New publisher was set</p>";
                                 }
                             } else {
-                                echo "<p>New publisher is not in database</p>";
+                                echo "<p class=\"red\">New publisher is not in database</p>";
                             }
                             mysqli_stmt_close($prepared);
                         }
@@ -405,9 +407,9 @@
                                 mysqli_stmt_execute($prepared);
                                 mysqli_stmt_close($prepared);
                             }
-                            echo "<p>New rating</p>";
+                            echo "<p class=\"green\">Rating updated</p>";
                         } else {
-                            echo "<p>New rating is not valid. Enter E, E10, T, or M.</p>";
+                            echo "<p class=\"red\">New rating is not valid. Enter E, E10, T, or M.</p>";
                         }
                     }
 
@@ -421,7 +423,7 @@
                             mysqli_stmt_execute($prepared);
                             mysqli_stmt_close($prepared);
                         }
-                        echo "<p>Release date was set to $release</p>";
+                        echo "<p class=\"green\">Release date was set to $release</p>";
                     }
                    
                     // Update genre 
@@ -441,7 +443,7 @@
                                     $genre[$i] = $col_id;
                                 }
                             } else {
-                                echo "<p>Genre '$genre[$i]' is not in database</p>";
+                                echo "<p class=\"red\">Genre '$genre[$i]' is not in database</p>";
                                 $genre = NULL;
                                 break;
                             }
@@ -485,7 +487,7 @@
                                     $platform[$i] = $col_id;
                                 }
                             } else {
-                                echo "<p>Genre '$platform[$i]' is not in database</p>";
+                                echo "<p class=\"red\">Genre '$platform[$i]' is not in database</p>";
                                 $platform = NULL;
                                 break;
                             }
@@ -520,7 +522,7 @@
                             mysqli_stmt_execute($prepared);
                             mysqli_stmt_close($prepared);
                         }
-                        echo "<p>Singleplayer was set to $singleplayer</p>";
+                        echo "<p class=\"green\">Singleplayer was set to $singleplayer</p>";
                     }
 
                     // Update multiplayer
@@ -532,7 +534,7 @@
                             mysqli_stmt_execute($prepared);
                             mysqli_stmt_close($prepared);
                         }
-                        echo "<p>Multiplayer was set to $multiplayer</p>";
+                        echo "<p class=\"green\">Multiplayer was set to $multiplayer</p>";
                     }
                     
                     // Update title
@@ -553,7 +555,7 @@
                                     mysqli_stmt_execute($prepared);
                                     mysqli_stmt_bind_result($prepared, $col_title);
                                     if (mysqli_stmt_fetch($prepared)) {
-                                        echo "<p>Game in database already has the title $col_title</p>";
+                                        echo "<p class=\"red\">Game in database already has the title $col_title</p>";
                                     } else {
                                         //mysqli_stmt_close($prepaered);
                                         echo "<p>No game has the title $col_title</p>";
@@ -562,11 +564,11 @@
                                             mysqli_stmt_bind_param($prepared, "ss", $new_title, $title);
                                             mysqli_stmt_execute($prepared);
                                         }
-                                        echo "<p>$title was set to $new_title</p>";
+                                        echo "<p class=\"green\">$title was set to $new_title</p>";
                                     }
                                 }
                             } else {
-                                echo "<p>Game is not in database</p>";
+                                echo "<p class=\"red\">Game is not in database</p>";
                             }
                             mysqli_stmt_close($prepared);
                         }
@@ -594,20 +596,19 @@
                                     mysqli_stmt_execute($prepared);
                                     mysqli_stmt_bind_result($prepared, $col_title);
                                     if (mysqli_stmt_fetch($prepared)) {
-                                        echo "<p>Developer in database already has the name $col_title</p>";
+                                        echo "<p class=\"red\">Developer in database already has the name $col_title</p>";
                                     } else {
-                                        //mysqli_stmt_close($prepaered);
                                         echo "<p>No developer has the name $col_title</p>";
                                         $name_update = "UPDATE Developer SET name = ? WHERE name = ?";
                                         if ($prepared = mysqli_prepare($connection, $name_update)) {
                                             mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
                                             mysqli_stmt_execute($prepared);
                                         }
-                                        echo "<p>$name was set to $new_name</p>";
+                                        echo "<p class=\"green\">$name was set to $new_name</p>";
                                     }
                                 }
                             } else {
-                                echo "<p>Developer is not in database</p>";
+                                echo "<p class=\"red\">Developer is not in database</p>";
                             }
                             mysqli_stmt_close($prepared);
                         }
@@ -634,7 +635,7 @@
                                     mysqli_stmt_execute($prepared);
                                     mysqli_stmt_bind_result($prepared, $col_title);
                                     if (mysqli_stmt_fetch($prepared)) {
-                                        echo "<p>Publisher in database already has the name $col_title</p>";
+                                        echo "<p class=\"red\">Publisher in database already has the name $col_title</p>";
                                     } else {
                                         echo "<p>No publisher has the name $col_title</p>";
                                         $name_update = "UPDATE Publisher SET name = ? WHERE name = ?";
@@ -642,11 +643,11 @@
                                             mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
                                             mysqli_stmt_execute($prepared);
                                         }
-                                        echo "<p>$name was set to $new_name</p>";
+                                        echo "<p class=\"green\">$name was set to $new_name</p>";
                                     }
                                 }
                             } else {
-                                echo "<p>Publisher is not in database</p>";
+                                echo "<p class=\"red\">Publisher is not in database</p>";
                             }
                             mysqli_stmt_close($prepared);
                         }
@@ -673,7 +674,7 @@
                                     mysqli_stmt_execute($prepared);
                                     mysqli_stmt_bind_result($prepared, $col_title);
                                     if (mysqli_stmt_fetch($prepared)) {
-                                        echo "<p>Platform in database already has the name $col_title</p>";
+                                        echo "<p class=\"red\">Platform in database already has the name $col_title</p>";
                                     } else {
                                         echo "<p>No platform has the name $col_title</p>";
                                         $name_update = "UPDATE Platform SET name = ? WHERE name = ?";
@@ -681,11 +682,11 @@
                                             mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
                                             mysqli_stmt_execute($prepared);
                                         }
-                                        echo "<p>$name was set to $new_name</p>";
+                                        echo "<p class=\"green\">$name was set to $new_name</p>";
                                     }
                                 }
                             } else {
-                                echo "<p>Platform is not in database</p>";
+                                echo "<p class=\"red\">Platform is not in database</p>";
                             }
                             mysqli_stmt_close($prepared);
                         }
@@ -712,7 +713,7 @@
                                     mysqli_stmt_execute($prepared);
                                     mysqli_stmt_bind_result($prepared, $col_title);
                                     if (mysqli_stmt_fetch($prepared)) {
-                                        echo "<p>Genre in database already has the name $col_title</p>";
+                                        echo "<p class=\"red\">Genre in database already has the name $col_title</p>";
                                     } else {
                                         echo "<p>No genre has the name $col_title</p>";
                                         $name_update = "UPDATE Genre SET name = ? WHERE name = ?";
@@ -720,11 +721,11 @@
                                             mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
                                             mysqli_stmt_execute($prepared);
                                         }
-                                        echo "<p>$name was set to $new_name</p>";
+                                        echo "<p class=\"green\">$name was set to $new_name</p>";
                                     }
                                 }
                             } else {
-                                echo "<p>Genre is not in database</p>";
+                                echo "<p class=\"red\">Genre is not in database</p>";
                             }
                             mysqli_stmt_close($prepared);
                         }
@@ -760,15 +761,15 @@
                                     if ($prepared = mysqli_prepare($connection, $review_update)) {
                                         mysqli_stmt_bind_param($prepared, "ss", $new_review, $review_id);
                                         mysqli_stmt_execute($prepared);
-                                        echo "<p>New review was set</p>";
+                                        echo "<p class=\"green\">New review was set</p>";
                                     }
                                 } else {
-                                    echo "Review for game from reviewer is not in database</p>";
+                                    echo "<p class=\"red\">Review for game from reviewer is not in database</p>";
                                 }
                             }
                             mysqli_stmt_close($prepared);
                         } else {
-                            echo "<p>Game is not in database</p>";
+                            echo "<p class=\"red\">Game is not in database</p>";
                         }
                     }
                 }
@@ -792,9 +793,9 @@
                         mysqli_query($connection, $delete1);
                         mysqli_query($connection, $delete2);
                         mysqli_query($connection, $delete3);
-                        echo "<p>Game deleted from database</p>";
+                        echo "<p class=\"green\">Game deleted from database</p>";
                     } else {
-                        echo "<p>Game is not in database</p>";
+                        echo "<p class=\"red\">Game is not in database</p>";
                     }
                 }
             } else if (isset($_POST['platform_delete'])) {
@@ -815,14 +816,14 @@
                         $result = mysqli_query($connection, $query);
                         $num_rows = mysqli_num_rows($result);
                         if ($num_rows > 0) {
-                            echo "<p>Could not delete platform, a game is referencing it</p>";
+                            echo "<p class=\"red\">Could not delete platform, a game is referencing it</p>";
                         } else {
                             $delete = "DELETE FROM Platform WHERE id = $platform_id";
                             mysqli_query($connection, $delete);
-                            echo "<p>Platform deleted</p>";
+                            echo "<p class=\"green\">Platform deleted</p>";
                         }
                     } else {
-                        echo "<p>Platform is not in database</p>";
+                        echo "<p class=\"red\">Platform is not in database</p>";
                     }
                 }
             } else if (isset($_POST['developer_delete'])) {
@@ -843,14 +844,14 @@
                         $result = mysqli_query($connection, $query);
                         $num_rows = mysqli_num_rows($result);
                         if ($num_rows > 0) {
-                            echo "<p>Could not delete developer, a game is referencing it</p>";
+                            echo "<p class=\"red\">Could not delete developer, a game is referencing it</p>";
                         } else {
                             $delete = "DELETE FROM Developer WHERE id = $developer_id";
                             mysqli_query($connection, $delete);
-                            echo "<p>Developer deleted</p>";
+                            echo "<p class=\"green\">Developer deleted</p>";
                         }
                     } else {
-                        echo "<p>Developer is not in database</p>";
+                        echo "<p class=\"red\">Developer is not in database</p>";
                     }
                 }
             } else if (isset($_POST['publisher_delete'])) {
@@ -871,14 +872,14 @@
                         $result = mysqli_query($connection, $query);
                         $num_rows = mysqli_num_rows($result);
                         if ($num_rows > 0) {
-                            echo "<p>Could not delete publisher, a game is referencing it</p>";
+                            echo "<p class=\"red\">Could not delete publisher, a game is referencing it</p>";
                         } else {
                             $delete = "DELETE FROM Publisher WHERE id = $publisher_id";
                             mysqli_query($connection, $delete);
-                            echo "<p>Publisher deleted</p>";
+                            echo "<p class=\"green\">Publisher deleted</p>";
                         }
                     } else {
-                        echo "<p>Publisher is not in database</p>";
+                        echo "<p class=\"red\">Publisher is not in database</p>";
                     }
                 }
             } else if (isset($_POST['genre_delete'])) {
@@ -899,14 +900,14 @@
                         $result = mysqli_query($connection, $query);
                         $num_rows = mysqli_num_rows($result);
                         if ($num_rows > 0) {
-                            echo "<p>Could not delete genre, a game is referencing it</p>";
+                            echo "<p class=\"green\">Could not delete genre, a game is referencing it</p>";
                         } else {
                             $delete = "DELETE FROM Genre WHERE id = $genre_id";
                             mysqli_query($connection, $delete);
-                            echo "<p>Genre deleted</p>";
+                            echo "<p class=\"green\">Genre deleted</p>";
                         }
                     } else {
-                        echo "<p>Genre is not in database</p>";
+                        echo "<p class=\"red\">Genre is not in database</p>";
                     }
                 }
             } else if (isset($_POST['review_delete'])) {
@@ -937,42 +938,111 @@
                                 mysqli_stmt_close($prepared);
                                 $delete = "DELETE FROM Review WHERE id = $review_id";
                                 mysqli_query($connection, $delete);
-                                echo "<p>Review deleted</p>";
+                                echo "<p class=\"green\">Review deleted</p>";
                             } else {
-                                echo "<p>Review for game from reviewer not in database</p>";
+                                echo "<p class=\"red\">Review for game from reviewer not in database</p>";
                             }
                         }
                     } else {
-                        echo "<p>Game is not in database</p>";
+                        echo "<p class=\"red\">Game is not in database</p>";
                     }
                 }
             }
         }
     ?>
 
+    <datalist id="games">
+        <?php
+            $query = "SELECT title FROM Game ORDER BY title";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $title = $row["title"];
+                echo "<option value=\"$title\">$title</option>";
+            }
+        ?>
+    </datalist>
+    <datalist id="developers">
+        <?php
+            $query = "SELECT name FROM Developer ORDER BY name";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $name = $row["name"];
+                echo "<option value='$name'>$name</option>";
+            }
+        ?>
+    </datalist>
+    <datalist id="publishers">
+        <?php
+            $query = "SELECT name FROM Publisher ORDER BY name";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $name = $row["name"];
+                echo "<option value='$name'>$name</option>";
+            }
+        ?>
+    </datalist>
+    <datalist id="platforms">
+        <?php
+            $query = "SELECT name FROM Platform ORDER BY name";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $name = $row["name"];
+                echo "<option value='$name'>$name</option>";
+            }
+        ?>
+    </datalist>
+    <datalist id="genres">
+        <?php
+            $query = "SELECT name FROM Genre ORDER BY name";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $name = $row["name"];
+                echo "<option value='$name'>$name</option>";
+            }
+        ?>
+    </datalist>
+    <datalist id="reviewers">
+        <?php
+            $query = "SELECT DISTINCT reviewer FROM Review ORDER BY reviewer";
+            $result = mysqli_query($connection, $query);
+            $num_rows = mysqli_num_rows($result);
+            for ($i = 0; $i < $num_rows; $i++) {
+                $row = mysqli_fetch_assoc($result);
+                $reviewer = $row["reviewer"];
+                echo "<option value='$reviewer'>$reviewer</option>";
+            }
+        ?>
+    </datalist>
+
     <!-- Multiple forms used to insert or edit each table within database -->
 	<h2>Edit</h2>
     <h3>Insert</h3> 
     <!-- Game Form -->
 	<form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Game</legend>
 	    <table>
 		<tr>
 	        <td><label>Title</label></td>
-		    <td><input type="text" name="title" required><br></td>
+		    <td><input type="text" name="title" list="games" autocomplete="off" required><br></td>
 		</tr>
 		<tr>
 		    <td><label>Developer</label></td>
-		    <td><input type="text" name="developer" required><br></td>
+		    <td><input type="text" name="developer" list="developers" autocomplete="off" required><br></td>
 		</tr>
 		<tr>
 		    <td><label>Publisher</label></td>
-		    <td><input type="text" name="publisher" required><br></td>
-		</tr>
-		<tr>
-	        <td><label>Rating</label></td>
-	        <td><input type="text" name="rating" required><br></td>
+		    <td><input type="text" name="publisher" list="publishers" autocomplete="off" required><br></td>
 		</tr>
 		<tr>
 	        <td><label>Platforms</label></td>
@@ -981,6 +1051,15 @@
 		<tr>
 	        <td><label>Genres</label></td>
 	        <td><input type="text" name="genre" required><br></td>
+		</tr>
+		<tr>
+	        <td><label>Rating</label></td>
+            <td><select name="rating" required>
+                <option value="E">E</option>
+                <option value="E10">E10</option>
+                <option value="T">T</option>
+                <option value="M">M</option>
+            </select></td>
 		</tr>
 	    <tr>
 		    <td><label>Release Date</label></td>
@@ -1003,12 +1082,12 @@
 
     <!-- Platform Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Platform</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name"><br></td>
+            <td><input type="text" name="name" list="platforms" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="platform_insert" value="Insert"></td>
@@ -1019,12 +1098,12 @@
 
     <!-- Developer Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Developer</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name"><br></td>
+            <td><input type="text" name="name" list="developers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="developer_insert" value="Insert"></td>
@@ -1035,12 +1114,12 @@
 
     <!-- Publisher Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Publisher</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name"><br></td>
+            <td><input type="text" name="name" list="developers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="publisher_insert" value="Insert"></td>
@@ -1051,12 +1130,12 @@
 
     <!-- Genre Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Genre</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name"><br></td>
+            <td><input type="text" name="name" list="genres" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="genre_insert" value="Insert"></td>
@@ -1067,20 +1146,20 @@
 
     <!-- Review Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Review</legend>
         <table>
         <tr>
             <td><label>Game</label></td>
-            <td><input type="text" name="game"><br></td>
+            <td><input type="text" name="game" list="games" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>Reviewer</label></td>
-            <td><input type="text" name="reviewer"><br></td>
+            <td><input type="text" name="reviewer" list="reviewers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>Review</label></td>
-            <td><input type="text" name="review"><br></td>
+            <td><input type="text" name="review" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="review_insert" value="Insert"></td>
@@ -1091,12 +1170,12 @@
 
     <h3>Update</h3>
 	<form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Game</legend>
 	    <table>
 		<tr>
 	        <td><label>Title</label></td>
-		    <td><input type="text" name="title" required><br></td>
+		    <td><input type="text" name="title" list="games" autocomplete="off" required><br></td>
 		</tr>
 		<tr>
 	        <td><label>New Title</label></td>
@@ -1104,15 +1183,11 @@
 		</tr>
 		<tr>
 		    <td><label>Developer</label></td>
-		    <td><input type="text" name="developer"><br></td>
+		    <td><input type="text" name="developer" list="developers"><br></td>
 		</tr>
 		<tr>
 		    <td><label>Publisher</label></td>
-		    <td><input type="text" name="publisher"><br></td>
-		</tr>
-		<tr>
-	        <td><label>Rating</label></td>
-	        <td><input type="text" name="rating"><br></td>
+		    <td><input type="text" name="publisher" list="publishers"><br></td>
 		</tr>
 		<tr>
 	        <td><label>Platforms</label></td>
@@ -1121,6 +1196,16 @@
 		<tr>
 	        <td><label>Genres</label></td>
 	        <td><input type="text" name="genre"><br></td>
+		</tr>
+		<tr>
+	        <td><label>Rating</label></td>
+            <td><select name="rating">
+                <option value=""></option>
+                <option value="E">E</option>
+                <option value="E10">E10</option>
+                <option value="T">T</option>
+                <option value="M">M</option>
+            </select></td>
 		</tr>
 	    <tr>
 		    <td><label>Release Date</label></td>
@@ -1145,12 +1230,12 @@
 
     <!-- Platform Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Platform</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="platforms" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>New Name</label></td>
@@ -1166,12 +1251,12 @@
 
     <!-- Developer Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Developer</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="developers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>New Name</label></td>
@@ -1186,12 +1271,12 @@
 
     <!-- Publisher Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Publisher</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="publishers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>New Name</label></td>
@@ -1206,12 +1291,12 @@
 
     <!-- Genre Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Genre</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="genres" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>New Name</label></td>
@@ -1226,16 +1311,16 @@
 
     <!-- Review Form -->
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Review</legend>
         <table>
         <tr>
             <td><label>Game</label></td>
-            <td><input type="text" name="game" required><br></td>
+            <td><input type="text" name="game" list="games" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>Reviewer</label></td>
-            <td><input type="text" name="reviewer" required><br></td>
+            <td><input type="text" name="reviewer" list="reviewers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>New Review</label></td>
@@ -1249,12 +1334,12 @@
 
     <h3>Delete</h3>
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Game</legend>
         <table>
         <tr>
             <td><label>Title</label></td>
-            <td><input type="text" name="title" required><br></td>
+            <td><input type="text" name="title" list="games" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="game_delete" value="Delete"></td>
@@ -1264,12 +1349,12 @@
     </form>
 
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Platform</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="platforms" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="platform_delete" value="Delete"></td>
@@ -1279,12 +1364,12 @@
     </form>
 
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Developer</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="developers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="developer_delete" value="Delete"></td>
@@ -1294,12 +1379,12 @@
     </form>
 
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Publisher</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="publishers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="publisher_delete" value="Delete"></td>
@@ -1309,12 +1394,12 @@
     </form> 
 
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Genre</legend>
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" required><br></td>
+            <td><input type="text" name="name" list="genres" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="genre_delete" value="Delete"></td>
@@ -1324,16 +1409,16 @@
     </form>
 
     <form action="edit.php" method="post">
-        <fieldset>
+        <fieldset class="black_bg">
         <legend>Review</legend>
         <table>
         <tr>
             <td><label>Game</label></td>
-            <td><input type="text" name="game" required><br></td>
+            <td><input type="text" name="game" list="games" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><label>Reviewer</label></td>
-            <td><input type="text" name="reviewer" required><br></td>
+            <td><input type="text" name="reviewer" list="reviewers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="review_delete" value="Delete"></td>
