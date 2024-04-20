@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -21,7 +24,11 @@
     <div class="button-container">
          <a href="home.php"><button>Home</button></a>
          <button class="button disabled"> Search </button>
-         <a href="edit.php"><button>Edit</button></a>
+         <?php
+             if (isset($_SESSION['admin'])) {
+                 echo "<a href=\"edit.php\"><button>Edit</button></a>";
+             }
+         ?>
          <a href="login.php"><button>Login</button></a>
 </div>
     <?php
@@ -106,6 +113,8 @@
             $game = '%'.$_POST['game'].'%';
             $sql_select= $sql_select . " WHERE Game.title LIKE ?";
         if($prepared = mysqli_prepare($connection, $sql_select)){
+            echo "<p>$sql_select<\p>";
+            echo "<p>$game</p>";
              mysqli_stmt_bind_param($prepared, "s", $game);
              mysqli_stmt_execute($prepared);
              mysqli_stmt_bind_result($prepared, $gameRow, $reviewerRow, $reviewRow);

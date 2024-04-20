@@ -1,3 +1,6 @@
+<?php
+    session_start();
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -10,7 +13,11 @@
      <div class="button-container">
          <button class="button disabled">Home</button>
          <a href="search.php"><button> Search </button></a>
-         <a href="edit.php"><button>Edit</button></a>
+         <?php
+             if (isset($_SESSION['admin'])) {
+                 echo "<a href=\"edit.php\"><button>Edit</button></a>";
+             }
+         ?>
          <a href="login.php"><button>Login</button></a>
  </div>
 
