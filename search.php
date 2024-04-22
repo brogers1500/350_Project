@@ -67,7 +67,7 @@
 	    </table>
 	</form>
         <table>
-        <tr><th class="sth"><a href="search.php?sort=Game.title">Title</a></th><th class="sth"><a href="search.php?sort=Game.is_multiplayer">Is Multiplayer?</a></th><th class="sth"><a href=search.php?sort=Game.is_singleplayer>Is Singleplayer?</a></th><th class="sth"><a href="search.php?sort=Developer.name">Developer</a></th><th class="sth"><a href="search.php?sort=Publisher.name">Publisher</a></th><th class="sth"><a href="search.php?sort=Platform.name">Platform</a></th><th class="sth"><a href="search.php?sort=Genre.name">Genre</a></th><th class="sth"><a href="search.php?sort=Game.rating">ESRB Rating</a></th><th class="sth"><a href="search.php?sort=Game.release_date">Release Date</a></th></tr>
+        <tr><th class="sth"><a href="search.php?sort=Game.title">Title</a></th><th class="sth"><a href="search.php?sort=Game.is_multiplayer">Is Multiplayer?</a></th><th class="sth"><a href=search.php?sort=Game.is_singleplayer>Is Singleplayer?</a></th><th class="sth"><a href="search.php?sort=Developer.name">Developer</a></th><th class="sth"><a href="search.php?sort=Publisher.name">Publisher</a></th><th class="sth">Platform</th><th class="sth">Genre</th><th class="sth"><a href="search.php?sort=Game.rating">ESRB Rating</a></th><th class="sth"><a href="search.php?sort=Game.release_date">Release Date</a></th></tr>
         <?php
             if (!empty($_GET['sort'])){
                 $sortBy= " ORDER BY " .$_GET['sort'];
