@@ -67,7 +67,7 @@
 	    </table>
 	</form>
         <table>
-        <tr><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Game.title">Title</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Game.is_multiplayer">Is Multiplayer?</a></th><th class="sth"><a href=https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Game.is_singleplayer>Is Singleplayer?</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Developer.name">Developer</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Publisher.name">Publisher</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Platform.name">Platform</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Genre.name">Genre</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Game.rating">ESRB Rating</a></th><th class="sth"><a href="https://cpsc.umw.edu/~asatterl/350_Project/search.php?sort=Game.release_date">Release Date</a></th></tr>
+        <tr><th class="sth"><a href="search.php?sort=Game.title">Title</a></th><th class="sth"><a href="search.php?sort=Game.is_multiplayer">Is Multiplayer?</a></th><th class="sth"><a href=search.php?sort=Game.is_singleplayer>Is Singleplayer?</a></th><th class="sth"><a href="search.php?sort=Developer.name">Developer</a></th><th class="sth"><a href="search.php?sort=Publisher.name">Publisher</a></th><th class="sth"><a href="search.php?sort=Platform.name">Platform</a></th><th class="sth"><a href="search.php?sort=Genre.name">Genre</a></th><th class="sth"><a href="search.php?sort=Game.rating">ESRB Rating</a></th><th class="sth"><a href="search.php?sort=Game.release_date">Release Date</a></th></tr>
         <?php
             if (!empty($_GET['sort'])){
                 $sortBy= " ORDER BY " .$_GET['sort'];
@@ -151,12 +151,9 @@
             $game = '%'.$_POST['game'].'%';
             $sql_select= $sql_select . " WHERE Game.title LIKE ?";
         if($prepared = mysqli_prepare($connection, $sql_select)){
-            echo "<p>$sql_select<\p>";
-            echo "<p>$game</p>";
              mysqli_stmt_bind_param($prepared, "s", $game);
              mysqli_stmt_execute($prepared);
              mysqli_stmt_bind_result($prepared, $gameRow, $reviewerRow, $reviewRow);
-            echo "HERE";
             while(mysqli_stmt_fetch($prepared)){
             echo "<tr><td>". $gameRow . "</td><td>" .$reviewerRow . "</td><td>" .$reviewRow . "</td></tr>";
             }
