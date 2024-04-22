@@ -80,6 +80,7 @@
             $sql_select = $select_all;
         }
            else {
+                $title = "%$title%";
                 $sql_select = $select_all . " WHERE Game.title LIKE ?";
         }
         if($prepared = mysqli_prepare($connection, $sql_select)){
