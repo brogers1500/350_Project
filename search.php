@@ -75,7 +75,7 @@
             else{
                 $sortBy="";
             }
-            $select_all= "SELECT Game.title, Game.is_singleplayer, Game.is_multiplayer, Game.rating, Game.release_date, Genre.name, Platform.name, Developer.name, Publisher.name FROM Game_Genre INNER JOIN Game ON Game.id = Game_Genre.game_id INNER JOIN Genre ON Game_Genre.genre_id = Genre.id INNER JOIN Game_Platform ON Game_Platform.game_id = Game.id INNER JOIN Platform ON Platform.id = Game_Platform.platform_id INNER JOIN Publisher ON Game.publisher = Publisher.id INNER JOIN Developer ON Developer.id = Game.developer".$sortBy;
+            $select_all= "SELECT Game.id, Game.title, Game.is_singleplayer, Game.is_multiplayer, Game.rating, Game.release_date, Developer.name, Publisher.name FROM Game INNER JOIN Publisher ON Game.publisher = Publisher.id INNER JOIN Developer ON Developer.id = Game.developer".$sortBy;
             if (empty($title)){
             $sql_select = $select_all;
         }
@@ -87,11 +87,48 @@
                         mysqli_stmt_bind_param($prepared, "s", $title);
                     }
                      mysqli_stmt_execute($prepared);
-                     mysqli_stmt_bind_result($prepared, $colTitle, $colSing, $colMult, $colRating, $colDate, $colGenre, $colPlat, $colDev, $colPub);         
-
+                     mysqli_stmt_bind_result($prepared, $colId, $colTitle, $colSing, $colMult, $colRating, $colDate, $colDev, $colPub);        
+                     // Store prepared result so program is able to loop through genre and platform collumns when setting up table
+                     mysqli_stmt_store_result($prepared);
         }
-        while(mysqli_stmt_fetch($prepared)){
-                 echo "<tr> <td>" . $colTitle . "</td><td> " .$colMult."</td><td> ".$colSing."</td><td> " . $colDev . "</td><td> " .$colPub . "</td><td> " .$colPlat . "</td><td> " .$colGenre ."</td><td>" . $colRating ."</td><td>" . $colDate ."</td></tr>";
+        while (mysqli_stmt_fetch($prepared)) {
+                 $id = $colId;
+                 // Use the game id to get the genre and platform
+                 $platform_result = mysqli_query($connection, "SELECT name FROM Game_Platform INNER JOIN Platform ON platform_id = Platform.id WHERE game_id = $id");
+                 $genre_result = mysqli_query($connection, "SELECT name FROM Game_Genre INNER JOIN Genre ON genre_id = Genre.id WHERE game_id = $id");
+                 echo "<tr>";
+                       echo "<td>$colTitle</td>";
+                       echo "<td>$colMult</td>";
+                       echo "<td>$colSing</td>";
+                       echo "<td>$colDev</td>";
+                       echo "<td>$colPub</td>";
+                       echo "<td>";
+                            // Loop through platform rows and echo names into table cell
+                            $num_plat = mysqli_num_rows($platform_result);
+                            for ($i = 0; $i < $num_plat; $i++) {
+                                $row = mysqli_fetch_assoc($platform_result);
+                                $name = $row['name'];
+                                echo $name;
+                                if ($i + 1 < $num_plat) {
+                                    echo "<br>";
+                                }
+                            }
+                            "</td>";
+                       echo "<td>";
+                            // Loop through genre rows and echo names into table cell
+                            $num_genre = mysqli_num_rows($genre_result);
+                            for ($i = 0; $i < $num_genre; $i++) {
+                                $row = mysqli_fetch_assoc($genre_result);
+                                $name = $row['name'];
+                                echo $name;
+                                if ($i + 1 < $num_genre) {
+                                    echo "<br>";
+                                }
+                            }
+                            "</td>";
+                       echo "<td>$colRating</td>";
+                       echo "<td>$colDate</td>";
+                 echo "</tr>";
         }
         ?>
         </table>
