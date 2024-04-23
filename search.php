@@ -24,6 +24,7 @@
     <div class="button-container">
          <a href="home.php"><button>Home</button></a>
          <button class="button disabled"> Search </button>
+         <a href="review.php"><button>Reviews</button></a>
          <?php
              if (isset($_SESSION['admin'])) {
                  echo "<a href=\"edit.php\"><button>Edit</button></a>";

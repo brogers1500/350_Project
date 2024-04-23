@@ -13,6 +13,7 @@
      <div class="button-container">
          <button class="button disabled">Home</button>
          <a href="search.php"><button> Search </button></a>
+         <a href="review.php"><button>Reviews</button></a>
          <?php
              if (isset($_SESSION['admin'])) {
                  echo "<a href=\"edit.php\"><button>Edit</button></a>";
@@ -47,6 +48,42 @@
     </td>
     </table>
 	<h2>Check Out This Random Game!</h2>
+    <table><tr><td>
+    <?php
+        include "credentials.php";
+         $servername = "localhost";
+         $db = "Arapaima";
+         $connection = mysqli_connect($servername, $username, $password, $db);
+         if (mysqli_connect_errno()) {
+             echo "<p class=\"red\">Failed to connect to the server</p>";
+         } else {
+ $query = "SELECT Game.title, Game.release_date, Game.rating, Publisher.name, Developer.name, Game.is_multiplayer, Game.is_singleplayer FROM Game INNER JOIN Developer ON Game.developer = Developer.id INNER JOIN Publisher ON Game.publisher = Publisher.id ORDER BY RAND() LIMIT 1";
+                 if ($prepared = mysqli_prepare($connection, $query)) {
+                     mysqli_stmt_execute($prepared);
+                     mysqli_stmt_bind_result($prepared, $tit1e, $date, $rating, $publisher, $dev, $mult, $sing);
+                }
+            while(mysqli_stmt_fetch($prepared)){
+            echo "<p>" . $tit1e." is a video game developed by ".  $dev ." and published by " .$publisher." on ".$date.". It has a rating of ".$rating.".</p>";
+            if ($mult && !$sing){
+                echo "<p> It is playable in multiplayer only.</p>";
+            }
+            else if ($mult && $sing){
+                echo "<p> It is playable in singleplayer and multiplayer.</p>";
+            }
+            else if (!$mult && $sing){
+                echo "<p> It is playable in sigleplayer only.</p>";
+            }
+            else{
+                echo "<p> The data must be incomplete, because it says it cannot be played in singleplayer or multiplayer! </p>";
+            }
+        }
+    }
+    ?>
+    </td><td>
+         <img src="https://cdn11.bigcommerce.com/s-ymgqt/images/stencil/1280x1280/products/31243/60773/wiiicomplete__03304.1712774924.gif?c=2" alt="An image of a boxed Nintendo Wii console">
+    </td></tr>
+    
+    </table>
     </body>
 
 </html>
