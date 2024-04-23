@@ -13,6 +13,7 @@
     <div class="button-container">
         <a href="home.php"><button>Home</button></a>
         <a href="search.php"><button>Search</button></a>
+         <a href="review.php"><button>Reviews</button></a>
         <?php
            if (isset($_SESSION['admin'])) {
                echo "<a href=\"edit.php\"><button>Edit</button></a>";
