@@ -30,7 +30,7 @@
         $connection = mysqli_connect($servername, $username, $password, $db);
 
         if (mysqli_connect_errno()) {
-            echo "<p>Failed to connect to the server</p>";
+            echo "<p class=\"red\">Failed to connect to the server</p>";
         } else {
             echo "<p class=\"green\">Connected to the server</p></p>";
         }
@@ -39,7 +39,6 @@
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Check which submit button was pressed and insert data
             if (isset($_POST['game_insert'])) {
-                echo "<p>game_insert set</p>";
                 $title = $_POST['title'];
                 $release = $_POST['release'];
                 if (isset($_POST['singleplayer'])) {
@@ -84,7 +83,6 @@
                     }
                     mysqli_stmt_close($prepared);
                 }
-                echo "<p>dev id = '$developer'</p>";
                 // Check if publisher is in database
                 $query = "SELECT id FROM Publisher WHERE name = ?";
                 if ($prepared = mysqli_prepare($connection, $query)) {
@@ -99,7 +97,6 @@
                     }
                     mysqli_stmt_close($prepared);
                 }
-                echo "<p>pub id = '$publisher'</p>";
                 // Check if genre is in database
                 $genre = preg_split('/,+\s*/', $genre);
                 for ($i = 0; $i < count($genre); $i++) {
@@ -110,7 +107,6 @@
                         mysqli_stmt_execute($prepared);
                         mysqli_stmt_bind_result($prepared, $col_id);
                         if (mysqli_stmt_fetch($prepared)) {
-                            echo "<p>$col_id</p>";
                             $genre[$i] = $col_id;
                         } else {
                             echo "<p class=\"red\">Genre '$genre[$i]' is not in database</p>";
@@ -123,7 +119,6 @@
                 // Check if platform is in database
                 $platform = preg_split('/,+\s*/', $platform);
                 for ($i = 0; $i < count($platform); $i++) {
-                    echo "<p>$platform[$i]</p>";
                     $query = "SELECT id FROM Platform WHERE name = ?";
                     if ($prepared = mysqli_prepare($connection, $query)) {
                         mysqli_stmt_bind_param($prepared, "s", $platform[$i]);
@@ -150,9 +145,6 @@
                 } else {
                     $singleplayer = 0;
                 }
-                echo "<pre>";print_r($genre);echo"</pre>";
-                echo "<pre>";print_r($platform);echo"</pre>";
-                echo "<p>Title = '$title'<br>Release Date = '$release'<br>Singleplayer = '$singleplayer'<br>Multiplayer = '$multiplayer'<br>Rating = '$rating'<br>Developer = '$developer'<br>Publisher = '$publisher'</p>";
                 
                 if ($title != NULL && $developer != NULL && $publisher != NULL && $genre != NULL && $platform != NULL) {
                     $game_insert = "INSERT INTO Game (title, release_date, developer, publisher, is_singleplayer, is_multiplayer, rating) VALUES (?, ?, ?, ?, ?, ?, ?)";     
@@ -221,11 +213,9 @@
                     }
                 }
             } else if (isset($_POST['developer_insert'])) {
-                echo "<p>developer_insert set</p>";
                 $name;
                 if (isset($_POST['name'])) {
                     $name = $_POST['name'];
-                    echo "$name";
                     // Check if developer is already in database
                     $query ="SELECT name FROM Developer WHERE name = ?";
                     if ($prepared = mysqli_prepare($connection, $query)) {
@@ -246,11 +236,9 @@
                     }
                 }
             } else if (isset($_POST['publisher_insert'])) {
-                echo "<p>publisher_insert set</p>";
                 $name;
                 if (isset($_POST['name'])) {
                     $name = $_POST['name'];
-                    echo "$name";
                     // Check if publisher is already in database
                     $query ="SELECT name FROM Publisher WHERE name = ?";
                     if ($prepared = mysqli_prepare($connection, $query)) {
@@ -271,11 +259,9 @@
                     }
                 }
             } else if (isset($_POST['genre_insert'])) {
-                echo "<p>genre_insert set</p>";
                 $name;
                 if (isset($_POST['name'])) {
                     $name = $_POST['name'];
-                    echo "$name";
                     // Check if platform is already in database
                     $query ="SELECT name FROM Genre WHERE name = ?";
                     if ($prepared = mysqli_prepare($connection, $query)) {
@@ -296,7 +282,6 @@
                     }
                 }
             } else if (isset($_POST['review_insert'])) {
-                echo "<p>review_insert set</p>";
                 $review;
                 $reviewer;
                 $game;
@@ -304,7 +289,6 @@
                     $review = $_POST['review'];
                     $reviewer = $_POST['reviewer'];
                     $game = $_POST['game'];
-                    echo "Game = " . $game . " - Review = " . $review . " - Reviewer = " . $reviewer;
                     // Check if game is in database and get id
                     $query = "SELECT id FROM Game WHERE title = ?";
                     if ($prepared = mysqli_prepare($connection, $query)) {
@@ -314,7 +298,6 @@
                         if (mysqli_stmt_fetch($prepared)) {
                             mysqli_stmt_close($prepared);
                             $game = $col_id;
-                            echo "<p>Game ID = '$game'";
                             // Check if game already has review from reviewer in database
                             $query = "SELECT review, reviewer FROM Review WHERE game = ? AND reviewer = ?";
                             if ($prepared = mysqli_prepare($connection, $query)) {   
@@ -340,21 +323,16 @@
                     }
                 }
             } else if (isset($_POST['game_update'])) {
-                echo "<p>game_update set</p>";
                 $developer = $_POST['developer'];
                 $publisher = $_POST['publisher'];
                 $platform = $_POST['platform'];
-                var_dump($_POST); 
 
                 if (isset($_POST['title'])) {
                     $title = $_POST['title'];
-                    echo "<p>title was inputted</p>";
-
                     // Update developer
                     if (isset($_POST['developer']) && !empty($developer)) {
                         $developer = $_POST['developer'];
                         // Get developer id
-                        echo "<p>Developer $developer was set</p>";
                         $query = "SELECT id FROM Developer WHERE name = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
                             mysqli_stmt_bind_param($prepared, "s", $developer);
@@ -381,7 +359,6 @@
                     if (isset($_POST['publisher']) && !empty($publisher)) {
                         $publisher = $_POST['publisher'];
                         // Get publisher id
-                        echo "<p>Publisher $publisher was set</p>";
                         $query = "SELECT id FROM Publisher WHERE name = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
                             mysqli_stmt_bind_param($prepared, "s", $publisher);
@@ -407,7 +384,6 @@
                     // Update rating
                     if (isset($_POST['rating']) && !empty($_POST['rating'])) {
                         $rating = strtoupper($_POST['rating']);
-                        echo "<p>Rating $rating was inputted</p>";
                         if ($rating === "E" || $rating === "E10" || $rating === "T" || $rating === "M") {
                             $rating_update = "UPDATE Game SET rating = ? WHERE title = ?";
                             if ($prepared = mysqli_prepare($connection, $rating_update)) {
@@ -424,7 +400,6 @@
                     // Update release date
                     if (isset($_POST['release']) && !empty($_POST['release'])) {
                         $release = $_POST['release'];
-                        echo "<p>Release date $release was inputted</p>";
                         $release_update = "UPDATE Game SET release_date = ? WHERE title = ?";
                         if ($prepared = mysqli_prepare($connection, $release_update)) {
                             mysqli_stmt_bind_param($prepared, "ss", $release, $title);
@@ -440,14 +415,12 @@
                         $genre = $_POST['genre'];
                         $genre = preg_split('/[\s,]+/', $genre);
                         for ($i = 0; $i < count($genre); $i++) {
-                            echo "<p>$genre[$i]</p>";
                             $query = "SELECT id FROM Genre WHERE name = ?";
                             if ($prepared = mysqli_prepare($connection, $query)) {
                                 mysqli_stmt_bind_param($prepared, "s", $genre[$i]);
                                 mysqli_stmt_execute($prepared);
                                 mysqli_stmt_bind_result($prepared, $col_id);
                                 if (mysqli_stmt_fetch($prepared)) {
-                                    echo "<p>$col_id</p>";
                                     $genre[$i] = $col_id;
                                 }
                             } else {
@@ -484,14 +457,12 @@
                         $platform = $_POST['platform'];
                         $platform = preg_split('/[\s,]+/', $platform);
                         for ($i = 0; $i < count($platform); $i++) {
-                            echo "<p>$platform[$i]</p>";
                             $query = "SELECT id FROM Platform WHERE name = ?";
                             if ($prepared = mysqli_prepare($connection, $query)) {
                                 mysqli_stmt_bind_param($prepared, "s", $platform[$i]);
                                 mysqli_stmt_execute($prepared);
                                 mysqli_stmt_bind_result($prepared, $col_id);
                                 if (mysqli_stmt_fetch($prepared)) {
-                                    echo "<p>$col_id</p>";
                                     $platform[$i] = $col_id;
                                 }
                             } else {
@@ -547,7 +518,6 @@
                     
                     // Update title
                     if (isset($_POST['new_title']) && !empty($_POST['new_title'])) {
-                        echo "<p>New title was inputted</p>";
                         $new_title = $_POST['new_title'];
                         $query = "SELECT title FROM Game WHERE title = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
@@ -555,7 +525,6 @@
                             mysqli_stmt_execute($prepared);
                             mysqli_stmt_bind_result($prepared, $col_id);
                             if (mysqli_stmt_fetch($prepared)) {
-                                echo "<p>Game is in database</p>";
                                 mysqli_stmt_close($prepared);
                                 $query = "SELECT title FROM Game WHERE title = ?";
                                 if ($prepared = mysqli_prepare($connection, $query)) {
@@ -565,8 +534,6 @@
                                     if (mysqli_stmt_fetch($prepared)) {
                                         echo "<p class=\"red\">Game in database already has the title $col_title</p>";
                                     } else {
-                                        //mysqli_stmt_close($prepaered);
-                                        echo "<p>No game has the title $col_title</p>";
                                         $title_update = "UPDATE Game SET title = ? WHERE title = ?";
                                         if ($prepared = mysqli_prepare($connection, $title_update)) {
                                             mysqli_stmt_bind_param($prepared, "ss", $new_title, $title);
@@ -588,7 +555,6 @@
                     
                     // Update developer name
                     if (isset($_POST['new_name']) && !empty($_POST['new_name'])) {
-                        echo "<p>New name was inputted</p>";
                         $new_name = $_POST['new_name'];
                         $query = "SELECT name FROM Developer WHERE name = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
@@ -606,7 +572,6 @@
                                     if (mysqli_stmt_fetch($prepared)) {
                                         echo "<p class=\"red\">Developer in database already has the name $col_title</p>";
                                     } else {
-                                        echo "<p>No developer has the name $col_title</p>";
                                         $name_update = "UPDATE Developer SET name = ? WHERE name = ?";
                                         if ($prepared = mysqli_prepare($connection, $name_update)) {
                                             mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
@@ -627,7 +592,6 @@
                     
                     // Update publisher name
                     if (isset($_POST['new_name']) && !empty($_POST['new_name'])) {
-                        echo "<p>New name was inputted</p>";
                         $new_name = $_POST['new_name'];
                         $query = "SELECT name FROM Publisher WHERE name = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
@@ -635,7 +599,6 @@
                             mysqli_stmt_execute($prepared);
                             mysqli_stmt_bind_result($prepared, $col_id);
                             if (mysqli_stmt_fetch($prepared)) {
-                                echo "<p>Publisher is in database</p>";
                                 mysqli_stmt_close($prepared);
                                 $query = "SELECT name FROM Publisher WHERE name = ?";
                                 if ($prepared = mysqli_prepare($connection, $query)) {
@@ -645,7 +608,6 @@
                                     if (mysqli_stmt_fetch($prepared)) {
                                         echo "<p class=\"red\">Publisher in database already has the name $col_title</p>";
                                     } else {
-                                        echo "<p>No publisher has the name $col_title</p>";
                                         $name_update = "UPDATE Publisher SET name = ? WHERE name = ?";
                                         if ($prepared = mysqli_prepare($connection, $name_update)) {
                                             mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
@@ -666,7 +628,6 @@
                     
                     // Update publisher name
                     if (isset($_POST['new_name']) && !empty($_POST['new_name'])) {
-                        echo "<p>New name was inputted</p>";
                         $new_name = $_POST['new_name'];
                         $query = "SELECT name FROM Platform WHERE name = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
@@ -674,7 +635,6 @@
                             mysqli_stmt_execute($prepared);
                             mysqli_stmt_bind_result($prepared, $col_id);
                             if (mysqli_stmt_fetch($prepared)) {
-                                echo "<p>Platform is in database</p>";
                                 mysqli_stmt_close($prepared);
                                 $query = "SELECT name FROM Platform WHERE name = ?";
                                 if ($prepared = mysqli_prepare($connection, $query)) {
@@ -684,7 +644,6 @@
                                     if (mysqli_stmt_fetch($prepared)) {
                                         echo "<p class=\"red\">Platform in database already has the name $col_title</p>";
                                     } else {
-                                        echo "<p>No platform has the name $col_title</p>";
                                         $name_update = "UPDATE Platform SET name = ? WHERE name = ?";
                                         if ($prepared = mysqli_prepare($connection, $name_update)) {
                                             mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
@@ -705,7 +664,6 @@
                     
                     // Update genre name
                     if (isset($_POST['new_name']) && !empty($_POST['new_name'])) {
-                        echo "<p>New name was inputted</p>";
                         $new_name = $_POST['new_name'];
                         $query = "SELECT name FROM Genre WHERE name = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
@@ -713,7 +671,6 @@
                             mysqli_stmt_execute($prepared);
                             mysqli_stmt_bind_result($prepared, $col_id);
                             if (mysqli_stmt_fetch($prepared)) {
-                                echo "<p>Platform is in database</p>";
                                 mysqli_stmt_close($prepared);
                                 $query = "SELECT name FROM Genre WHERE name = ?";
                                 if ($prepared = mysqli_prepare($connection, $query)) {
@@ -723,7 +680,6 @@
                                     if (mysqli_stmt_fetch($prepared)) {
                                         echo "<p class=\"red\">Genre in database already has the name $col_title</p>";
                                     } else {
-                                        echo "<p>No genre has the name $col_title</p>";
                                         $name_update = "UPDATE Genre SET name = ? WHERE name = ?";
                                         if ($prepared = mysqli_prepare($connection, $name_update)) {
                                             mysqli_stmt_bind_param($prepared, "ss", $new_name, $name);
@@ -753,17 +709,13 @@
                         if (mysqli_stmt_fetch($prepared)) {
                             mysqli_stmt_close($prepared);
                             $game = $col_id;
-                            echo "<p>Game ID = '$game'";
-                            echo "<p>New review was inputted</p>";
                             $query = "SELECT id FROM Review WHERE game = ? AND reviewer = ?";
                             if ($prepared = mysqli_prepare($connection, $query)) {
                                 mysqli_stmt_bind_param($prepared, "ss", $game, $reviewer);
                                 mysqli_stmt_execute($prepared);
                                 mysqli_stmt_bind_result($prepared, $col_id);
                                 if (mysqli_stmt_fetch($prepared)) {
-                                    echo "<p>Review for game from reviewer is in database</p>";
                                     $review_id = $col_id;
-                                    echo "<p>Review ID = $review_id</p>";
                                     mysqli_stmt_close($prepared);
                                     $review_update = "UPDATE Review SET review = ? WHERE id = ?";
                                     if ($prepared = mysqli_prepare($connection, $review_update)) {
@@ -792,8 +744,6 @@
                     mysqli_stmt_bind_result($prepared, $col_id);
                     if (mysqli_stmt_fetch($prepared)) {
                         $game_id = $col_id;
-                        echo "<p>Game is in database</p>";
-                        echo "<p>Game id = $game_id</p>";
                         mysqli_stmt_close($prepared);
                         $delete1 = "DELETE FROM Game_Genre WHERE game_id = $game_id";
                         $delete2 = "DELETE FROM Game_Platform WHERE game_id = $game_id";
@@ -817,8 +767,6 @@
                     mysqli_stmt_bind_result($prepared, $col_id);
                     if (mysqli_stmt_fetch($prepared)) {
                         $platform_id = $col_id;
-                        echo "<p>Platform is in database</p>";
-                        echo "<p>Platform id = $platform_id</p>";
                         mysqli_stmt_close($prepared);
                         $query = "SELECT platform_id FROM Game_Platform WHERE platform_id = $platform_id";
                         $result = mysqli_query($connection, $query);
@@ -845,8 +793,6 @@
                     mysqli_stmt_bind_result($prepared, $col_id);
                     if (mysqli_stmt_fetch($prepared)) {
                         $developer_id = $col_id;
-                        echo "<p>Developer is in database</p>";
-                        echo "<p>Developer id = $developer_id</p>";
                         mysqli_stmt_close($prepared);
                         $query = "SELECT id FROM Game WHERE developer = $developer_id";
                         $result = mysqli_query($connection, $query);
@@ -873,8 +819,6 @@
                     mysqli_stmt_bind_result($prepared, $col_id);
                     if (mysqli_stmt_fetch($prepared)) {
                         $publisher_id = $col_id;
-                        echo "<p>Publisher is in database</p>";
-                        echo "<p>Publisher id = $publisher_id</p>";
                         mysqli_stmt_close($prepared);
                         $query = "SELECT id FROM Game WHERE publisher = $publisher_id";
                         $result = mysqli_query($connection, $query);
@@ -901,8 +845,6 @@
                     mysqli_stmt_bind_result($prepared, $col_id);
                     if (mysqli_stmt_fetch($prepared)) {
                         $genre_id = $col_id;
-                        echo "<p>Genre is in database</p>";
-                        echo "<p>Genre id = $genre_id</p>";
                         mysqli_stmt_close($prepared);
                         $query = "SELECT genre_id FROM Game_Genre WHERE genre_id = $genre_id";
                         $result = mysqli_query($connection, $query);
@@ -931,8 +873,6 @@
                     mysqli_stmt_bind_result($prepared, $col_id);
                     if (mysqli_stmt_fetch($prepared)) {
                         $game_id = $col_id;
-                        echo "<p>Game is in database</p>";
-                        echo "<p>Game id = $game_id</p>";
                         mysqli_stmt_close($prepared);
                         $query = "SELECT id FROM Review WHERE game = ? AND reviewer = ?";
                         if ($prepared = mysqli_prepare($connection, $query)) {
@@ -941,8 +881,6 @@
                             mysqli_stmt_bind_result($prepared, $col_id);
                             if (mysqli_stmt_fetch($prepared)) {
                                 $review_id = $col_id;
-                                echo "<p>Review is in database</p>";
-                                echo "<p>Review id = $review_id</p>";
                                 mysqli_stmt_close($prepared);
                                 $delete = "DELETE FROM Review WHERE id = $review_id";
                                 mysqli_query($connection, $delete);
@@ -959,6 +897,7 @@
         }
     ?>
 
+    <!-- Datalists used for autocomplete for text boxes -->
     <datalist id="games">
         <?php
             $query = "SELECT title FROM Game ORDER BY title";

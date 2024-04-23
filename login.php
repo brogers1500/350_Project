@@ -1,8 +1,5 @@
 <?php
     session_start();
-    if (isset($_SESSION['admin'])) {
-        echo "<p>admin is logged in</p>";
-    }
 ?>
 <!DOCTYPE html>
 <html>
