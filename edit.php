@@ -30,13 +30,6 @@
         $db = "Arapaima";
         $connection = mysqli_connect($servername, $username, $password, $db);
 
-        if (mysqli_connect_errno()) {
-            echo "<p class=\"red\">Failed to connect to the server</p>";
-        } else {
-            echo "<p class=\"green\">Connected to the server</p></p>";
-        }
-
-
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Check which submit button was pressed and insert data
             if (isset($_POST['game_insert'])) {
@@ -1061,7 +1054,7 @@
         <table>
         <tr>
             <td><label>Name</label></td>
-            <td><input type="text" name="name" list="developers" autocomplete="off" required><br></td>
+            <td><input type="text" name="name" list="publishers" autocomplete="off" required><br></td>
         </tr>
         <tr>
             <td><input type="submit" name="publisher_insert" value="Insert"></td>
