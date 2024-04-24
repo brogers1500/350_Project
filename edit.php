@@ -3,7 +3,7 @@
     if (!isset($_SESSION['admin'])) {
         // Redirect user if not logged in
         header("Location: login.php");
-        exit;
+        //exit;
     }
 ?>
 <!DOCTYPE html>
@@ -102,7 +102,6 @@
                 // Check if genre is in database
                 $genre = preg_split('/,+\s*/', $genre);
                 for ($i = 0; $i < count($genre); $i++) {
-                    echo "<p>$genre[$i]</p>";
                     $query = "SELECT id FROM Genre WHERE name = ?";
                     if ($prepared = mysqli_prepare($connection, $query)) {
                         mysqli_stmt_bind_param($prepared, "s", $genre[$i]);
@@ -183,7 +182,6 @@
                 $name;
                 if (isset($_POST['name'])) {
                     $name = $_POST['name'];
-                    echo "$name";
                     // Check if platform is already in database
                     $query ="SELECT name FROM Platform WHERE name = ?";
                     if ($prepared = mysqli_prepare($connection, $query)) {
@@ -191,7 +189,7 @@
                         mysqli_stmt_execute($prepared);
                         mysqli_stmt_bind_result($prepared, $col_name);
                         if (mysqli_stmt_fetch($prepared)) {
-                            echo "<p class \"red\">Platform already in database</p>";
+                            echo "<p class=\"red\">Platform already in database</p>";
                         } else {
                             // Insert platform into database
                             $insert = "INSERT INTO Platform (name) VALUES (?)";
@@ -199,8 +197,9 @@
                                 mysqli_stmt_bind_param($prepared, "s", $name);
                                 mysqli_stmt_execute($prepared);
                             }
-                            echo "<p class=\"geen\">Platform inserted into database</p>";
+                            echo "<p class=\"green\">Platform inserted into database</p>";
                         }
+                        mysqli_stmt_close($prepared);
                     }
                 }
             } else if (isset($_POST['developer_insert'])) {
@@ -224,6 +223,7 @@
                             }
                             echo "<p class=\"green\">Developer inserted into database</p>";
                         }
+                        mysqli_stmt_close($prepared);
                     }
                 }
             } else if (isset($_POST['publisher_insert'])) {
@@ -247,6 +247,7 @@
                             }
                             echo "<p class=\"green\">Publisher inserted into database</p>";
                         }
+                        mysqli_stmt_close($prepared);
                     }
                 }
             } else if (isset($_POST['genre_insert'])) {
@@ -270,6 +271,7 @@
                             }
                             echo "<p class=\"green\">Genre inserted into database</p>";
                         }
+                        mysqli_stmt_close($prepared);
                     }
                 }
             } else if (isset($_POST['review_insert'])) {
@@ -297,6 +299,7 @@
                                 mysqli_stmt_bind_result($prepared, $col_review, $col_reviewer);
                                 if (mysqli_stmt_fetch($prepared)) {
                                     echo "<p class=\"red\">Review from reviewer for game already in database</p>";
+                                    mysqli_stmt_close($prepared);
                                 } else {
                                     // Insert review into database
                                     mysqli_stmt_close($prepared);
@@ -432,7 +435,6 @@
                                 mysqli_stmt_close($prepared);
                                 $game_id = $col_id;
                                 $num_rows;
-                                //$query = "SELECT * FROM Game_Genre WHERE game_id = $game_id";
                                 $delete = "DELETE FROM Game_Genre WHERE game_id = $game_id";
                                 $result = mysqli_query($connection, $delete);
                                 for ($i = 0; $i < count($genre); $i++) {
