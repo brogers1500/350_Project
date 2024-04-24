@@ -18,6 +18,7 @@
     <div class="button-container">
         <a href="home.php"><button>Home</button></a>
         <a href="search.php"><button>Search</button></a>
+         <a href="review.php"><button>Reviews</button></a>
         <button class="button disabled">Edit</button>
         <a href="login.php"><button>Login</button></a>
     </div>
@@ -41,6 +42,7 @@
             if (isset($_POST['game_insert'])) {
                 $title = $_POST['title'];
                 $release = $_POST['release'];
+                // Set modes
                 if (isset($_POST['singleplayer'])) {
                     $singleplayer = 1;
                 } else {
@@ -134,18 +136,8 @@
                         mysqli_stmt_close($prepared);
                     }
                 }
-                // Set the modes 
-                if ($multiplayer == "on") {
-                    $multiplayer = 1;
-                } else {
-                    $multiplayer = 0;
-                }
-                if ($singleplayer == "on") {
-                    $singleplayer = 1;
-                } else {
-                    $singleplayer = 0;
-                }
-                
+
+                // If no value is null/ insert to database 
                 if ($title != NULL && $developer != NULL && $publisher != NULL && $genre != NULL && $platform != NULL) {
                     $game_insert = "INSERT INTO Game (title, release_date, developer, publisher, is_singleplayer, is_multiplayer, rating) VALUES (?, ?, ?, ?, ?, ?, ?)";     
                     if ($prepared = mysqli_prepare($connection, $game_insert)) {
@@ -188,7 +180,6 @@
                     echo "<p class=\"red\">Game could not be inserted into database</p>";
                 }
             } else if (isset($_POST['platform_insert'])) {
-                echo "<p>platform_insert set</p>";
                 $name;
                 if (isset($_POST['name'])) {
                     $name = $_POST['name'];
@@ -747,10 +738,12 @@
                         mysqli_stmt_close($prepared);
                         $delete1 = "DELETE FROM Game_Genre WHERE game_id = $game_id";
                         $delete2 = "DELETE FROM Game_Platform WHERE game_id = $game_id";
-                        $delete3 = "DELETE FROM Game WHERE id = $game_id";
+                        $delete3 = "DELETE FROM Review WHERE game = $game_id";
+                        $delete4 = "DELETE FROM Game WHERE id = $game_id";
                         mysqli_query($connection, $delete1);
                         mysqli_query($connection, $delete2);
                         mysqli_query($connection, $delete3);
+                        mysqli_query($connection, $delete4);
                         echo "<p class=\"green\">Game deleted from database</p>";
                     } else {
                         echo "<p class=\"red\">Game is not in database</p>";
